@@ -1,5 +1,6 @@
 import Section from "./Section";
 import CTAButton from "./CTAButton";
+import { WA_DEFAULT } from "@/app/lib/constants";
 
 /* Hover card memakai CSS transition (lihat .sol-card di <style> bawah), bukan
  * library animasi — satu efek tidak sepadan dengan ~124KB JS di bundle.
@@ -80,8 +81,7 @@ const SOLUTIONS: Solution[] = [
     ],
     timeline: "Pengerjaan 2-3 hari",
     cta: "Pelajari Selengkapnya",
-    waMessage:
-      "Halo Bersua, saya tertarik solusi Starter. Bisnis saya bergerak di bidang ____",
+    waMessage: WA_DEFAULT,
     primary: false,
   },
   {
@@ -124,8 +124,7 @@ const SOLUTIONS: Solution[] = [
     ],
     timeline: "Pengerjaan 4-5 hari",
     cta: "Mulai Project Anda",
-    waMessage:
-      "Halo Bersua, saya tertarik solusi Business Website. Bisnis saya bergerak di bidang ____",
+    waMessage: WA_DEFAULT,
     primary: true,
   },
   {
@@ -150,8 +149,7 @@ const SOLUTIONS: Solution[] = [
     bottomNote:
       "Pengerjaan dan harga akhir berdasarkan scope & kompleksitas proyek.",
     cta: "Konsultasikan Kebutuhan",
-    waMessage:
-      "Halo Bersua, saya ingin mendiskusikan kebutuhan custom digital solution untuk bisnis saya di bidang ____",
+    waMessage: WA_DEFAULT,
     primary: false,
   },
 ];
@@ -258,7 +256,7 @@ export default function Harga() {
         </div>
         <CTAButton
           location="pricing_consult"
-          message="Halo Bersua, saya ingin konsultasi untuk menentukan solusi yang tepat. Bisnis saya bergerak di bidang ____"
+          message={WA_DEFAULT}
         >
           Konsultasi Gratis via WhatsApp
         </CTAButton>

@@ -1,7 +1,7 @@
 "use client";
 
 import { trackWAClick } from "@/app/lib/tracking";
-import { WA_NUMBER } from "@/app/lib/constants";
+import { WA_NUMBER, WA_DEFAULT } from "@/app/lib/constants";
 
 interface CTAButtonProps {
   location: string;
@@ -21,7 +21,7 @@ export function buildWALink(message: string): string {
 
 export default function CTAButton({
   location,
-  message = "Halo Bersua, saya ingin tanya soal pembuatan halaman bisnis. Bisnis saya bergerak di bidang ____",
+  message = WA_DEFAULT,
   className = "",
   fullWidth = false,
   inverted = false,

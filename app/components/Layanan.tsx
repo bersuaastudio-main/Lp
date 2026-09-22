@@ -1,4 +1,5 @@
 import Section from "./Section";
+import { WA_DEFAULT } from "@/app/lib/constants";
 import CTAButton from "./CTAButton";
 
 const layanan = [
@@ -17,7 +18,7 @@ const layanan = [
     ],
     recommended: false,
     tint: "var(--color-card-white)",
-    waMessage: "Halo Bersua, saya tertarik dengan layanan Launch (Landing Page). Bisnis saya bergerak di bidang ____",
+    waMessage: WA_DEFAULT,
   },
   {
     id: "build",
@@ -36,7 +37,7 @@ const layanan = [
     ],
     recommended: true,
     tint: "var(--color-powder-blue)",
-    waMessage: "Halo Bersua, saya tertarik dengan layanan Build (Business Website). Bisnis saya bergerak di bidang ____",
+    waMessage: WA_DEFAULT,
   },
   {
     id: "ecommerce",
@@ -53,7 +54,7 @@ const layanan = [
     ],
     recommended: false,
     tint: "var(--color-mint-wash)",
-    waMessage: "Halo Bersua, saya tertarik dengan layanan E-Commerce (Online Store). Bisnis saya bergerak di bidang ____",
+    waMessage: WA_DEFAULT,
   },
   {
     id: "custom",
@@ -71,7 +72,7 @@ const layanan = [
     ],
     recommended: false,
     tint: "var(--color-blush-tint)",
-    waMessage: "Halo Bersua, saya tertarik dengan layanan Custom (Digital Solution). Bisnis saya bergerak di bidang ____",
+    waMessage: WA_DEFAULT,
   },
 ];
 

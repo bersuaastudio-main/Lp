@@ -4,6 +4,7 @@ import Image from "next/image";
 import Section from "./Section";
 import { buildWALink } from "./CTAButton";
 import { trackWAClick } from "@/app/lib/tracking";
+import { WA_DEFAULT } from "@/app/lib/constants";
 
 /**
  * 02 · Kategori Bisnis — tanpa header. Kartunya yang bicara.
@@ -61,10 +62,6 @@ const kategori = [
   },
 ];
 
-/* Pesan WA pre-filled per kategori — nama kategori ikut terkirim (REQ-W3) */
-const waMessage = (name: string) =>
-  `Halo Bersua, saya tertarik membuat website untuk bisnis ${name}. Bisnis saya bergerak di bidang ____`;
-
 export default function KategoriBisnis() {
   return (
     <Section id="kategori" track="kategori_bisnis" className="kb-sec">
@@ -72,7 +69,7 @@ export default function KategoriBisnis() {
         {kategori.map((k, i) => (
           <a
             key={k.name}
-            href={buildWALink(waMessage(k.name))}
+            href={buildWALink(WA_DEFAULT)}
             target="_blank"
             rel="noopener noreferrer"
             className="kb-card"

@@ -9,6 +9,10 @@ export const SITE_URL = "https://bersua.space";
 /** Satu label CTA di seluruh halaman (PRD G4). */
 export const CTA_LABEL = "Konsultasi Gratis";
 
-/** Pesan pre-filled default. Tiap section memakai variannya sendiri (REQ-W3). */
+/**
+ * Pesan pre-filled WhatsApp — dipakai SEMUA CTA di halaman, supaya chat yang
+ * masuk selalu berformat sama dan mudah ditindaklanjuti.
+ * Catatan format: WhatsApp menebalkan teks dengan SATU tanda bintang (*teks*).
+ */
 export const WA_DEFAULT =
-  "Halo Bersua, saya ingin tanya soal pembuatan halaman bisnis. Bisnis saya bergerak di bidang ____";
+  "Halo, saya tertarik melihat bagaimana bisnis saya dapat ditampilkan melalui *Website Preview Gratis*.\n\nNama bisnis: *[ ]*\nBidang usaha: *[ ]*";
