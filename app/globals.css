@@ -1,0 +1,434 @@
+@import "tailwindcss";
+/* Inter dimuat lewat next/font di layout.tsx (self-host + preload + swap),
+   bukan @import CSS yang render-blocking. Variabelnya: --font-inter */
+
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --color-cream-paper: #f8f8f2;
+  --color-card-white: #ffffff;
+  --color-studio-ink: #1a1a1a;
+  --color-deep-black: #000000;
+  --color-powder-blue: #bedbff;
+  --color-mint-wash: #a4f4cf;
+  --color-blush-tint: #ffc9c9;
+  --color-signal-green: #00c950;
+  --color-ink-60: rgba(26, 26, 26, 0.60);
+  --color-ink-20: rgba(26, 26, 26, 0.20);
+  --color-ink-08: rgba(26, 26, 26, 0.08);
+
+  /* Typography */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --text-caption: 14px;
+  --leading-caption: 1.43;
+  --tracking-caption: -0.35px;
+  --text-body: 16px;
+  --leading-body: 1.5;
+  --tracking-body: -0.4px;
+  --text-subheading: 20px;
+  --leading-subheading: 1.4;
+  --tracking-subheading: -0.5px;
+  --text-heading: 30px;
+  --leading-heading: 1.2;
+  --tracking-heading: -0.75px;
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1.2;
+  --tracking-heading-lg: -1.2px;
+  --text-display: 88px;
+  --leading-display: 1;
+  --tracking-display: -2.2px;
+  --text-display-xl: 96px;
+  --leading-display-xl: 1;
+  --tracking-display-xl: -2.4px;
+
+  /* Spacing */
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-96: 96px;
+  --spacing-112: 112px;
+  --spacing-176: 176px;
+
+  /* Border Radius */
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-pill: 9999px;
+  --radius-3xl: 24px;
+
+  /* Layout */
+  /* 1340px mengikuti container referensi Websmith. DESIGN.md menulis 1200px,
+     tetapi situs aslinya memakai max-w-[1340px] — angka itu yang dipakai. */
+  --max-width: 1340px;
+  --section-gap: 96px;
+  --card-padding: 32px;
+  /* Tinggi navbar — dipakai hero (min-height) dan scroll offset anchor */
+  --nav-height: 60px;
+}
+
+/* Navbar mobile dua baris: brand+CTA di atas, strip link di bawah */
+@media (max-width: 767px) {
+  :root {
+    /* Dua baris + target sentuh 44px pada strip link */
+    --nav-height: 120px;
+  }
+}
+
+/* ─── Reset & Base ───────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  /* Offset navbar untuk anchor diatur via scroll-margin-top di section[id]
+     (jangan tambahkan scroll-padding-top di sini — keduanya akan terakumulasi) */
+}
+
+body {
+  background-color: var(--color-cream-paper);
+  color: var(--color-studio-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Tailwind v4 Theme Bridge ───────────────────────────────────────────── */
+@theme inline {
+  --color-cream: #f8f8f2;
+  --color-ink: #1a1a1a;
+  --color-card: #ffffff;
+  --color-powder: #bedbff;
+  --color-mint: #a4f4cf;
+  --color-blush: #ffc9c9;
+  --color-green: #00c950;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Utility: Section Container ─────────────────────────────────────────── */
+.section-container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--spacing-24);
+}
+
+@media (min-width: 768px) {
+  .section-container {
+    padding-inline: var(--spacing-48);
+  }
+}
+
+@media (min-width: 1440px) {
+  .section-container {
+    padding-inline: var(--spacing-64);
+  }
+}
+
+/* ─── Utility: Section Padding ───────────────────────────────────────────── */
+.section-pad {
+  padding-block: var(--spacing-64);
+}
+
+@media (min-width: 768px) {
+  .section-pad {
+    padding-block: var(--spacing-96);
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-pad {
+    padding-block: var(--spacing-112);
+  }
+}
+
+/* ─── Button: Dark Filled (Primary CTA) ──────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+  background-color: var(--color-studio-ink);
+  color: var(--color-card-white);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.3px;
+  padding: 14px var(--spacing-32);
+  border-radius: var(--radius-lg);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  min-height: 48px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary:hover {
+  opacity: 0.85;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 767px) {
+  .btn-primary-full {
+    width: 100%;
+  }
+}
+
+/* ─── Button: Text link (dipakai di kartu segmen) ────────────────────────── */
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caption);
+  color: var(--color-studio-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 44px; /* target sentuh REQ-N6 */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-link:hover { opacity: 0.65; }
+
+/* ─── Tag / Pill ─────────────────────────────────────────────────────────── */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: var(--leading-caption);
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+/* ─── FAQ Accordion (CSS-only via <details>) ─────────────────────────────── */
+details.faq-item {
+  border-bottom: 1px solid var(--color-ink-08);
+}
+
+details.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding-block: var(--spacing-24);
+  font-size: var(--text-subheading);
+  font-weight: 500;
+  line-height: var(--leading-subheading);
+  letter-spacing: var(--tracking-subheading);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-16);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+details.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq-item summary::after {
+  content: '+';
+  font-size: 24px;
+  font-weight: 300;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  color: var(--color-studio-ink);
+}
+
+details.faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+details.faq-item .faq-body {
+  padding-bottom: var(--spacing-24);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--color-ink-60);
+  max-width: 640px;
+}
+
+/* ─── Pricing Card ───────────────────────────────────────────────────────── */
+.pricing-card {
+  background: var(--color-card-white);
+  border-radius: var(--radius-xl);
+  padding: var(--card-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  position: relative;
+}
+
+/* ─── Image lazy load fade ───────────────────────────────────────────────── */
+img {
+  border-radius: var(--radius-xl);
+}
+
+/* ─── Focus visible ──────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-studio-ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ─── Button: Inverted (light on dark bg) ───────────────────────────────── */
+/* Dipakai di CTAPenutup yang pakai dark background */
+.btn-primary-inverted {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+  background-color: var(--color-card-white);
+  color: var(--color-studio-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.3px;
+  padding: 16px var(--spacing-32);
+  border-radius: var(--radius-lg);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  min-height: 52px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary-inverted:hover {
+  opacity: 0.9;
+}
+
+.btn-primary-inverted:active {
+  transform: scale(0.98);
+}
+
+/* ─── Scroll anchor offset for all section ids ───────────────────────────── */
+section[id] {
+  scroll-margin-top: calc(var(--nav-height) + 16px);
+}
+
+/* ─── Kerangka Section tunggal (LP-BLUEPRINT-v2 §2) ──────────────────────── */
+/* Satu kerangka untuk semua section: label bernomor → heading → sub → konten. */
+
+.sec-head {
+  max-width: 680px;
+  margin-bottom: var(--spacing-40);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.sec-label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-8);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-24);
+}
+
+.sec-num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.sec-dot {
+  opacity: 0.5;
+}
+
+.sec-heading {
+  font-size: clamp(var(--text-heading), 3.2vw, var(--text-heading-lg));
+  line-height: var(--leading-heading-lg);
+  letter-spacing: var(--tracking-heading-lg);
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.sec-sub {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  margin-top: var(--spacing-16);
+  max-width: 560px;
+}
+
+.sec-body {
+  border-top: 1px solid;
+  padding-top: var(--spacing-40);
+}
+
+/* Section tanpa header — kontennya berdiri sendiri, tanpa garis pemisah */
+.sec-body-bare {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* Grid utilities: 4, 3, 2 kolom. */
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-16);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-16);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-16);
+}
+
+@media (min-width: 1024px) {
+  .grid-4, .grid-3, .grid-2 { gap: var(--spacing-24); }
+}
+
+@media (min-width: 1280px) {
+  .grid-4, .grid-3, .grid-2 { gap: var(--spacing-32); }
+}
+
+@media (max-width: 1100px) {
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 900px) {
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+  .grid-4,
+  .grid-3,
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-16);
+  }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
