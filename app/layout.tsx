@@ -72,11 +72,10 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  /* app/favicon.ico otomatis dipasang Next — jangan didaftarkan ulang di sini
+     atau tag <link rel="icon"> akan muncul dua kali. */
   icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-    ],
+    icon: [{ url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" }],
     apple: "/apple-touch-icon.png",
   },
 };
