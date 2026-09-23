@@ -83,7 +83,7 @@ export default function Navbar() {
             priority
             className="nav-logo"
           />
-          <span>Bersua</span>
+          <span className="nav-wordmark-text">Bersua</span>
         </a>
 
         {/* Link navigasi */}
@@ -110,7 +110,8 @@ export default function Navbar() {
             onClick={() => trackWAClick("navbar")}
             aria-label="Hubungi kami via WhatsApp"
           >
-            Hubungi Kami
+            <span className="nav-cta-long">Hubungi Kami</span>
+            <span className="nav-cta-short">Hubungi</span>
           </a>
         </div>
       </div>
@@ -216,29 +217,34 @@ export default function Navbar() {
 
         .nav-cta:hover { opacity: 0.85; }
 
+        .nav-cta-short { display: none; }
+
         /* ── Tablet: status text disembunyikan lebih dulu ── */
         @media (max-width: 1023px) {
           .nav-inner { gap: var(--spacing-24); }
           .nav-links { gap: var(--spacing-16); }
         }
 
-        /* ── Mobile: dua baris — brand+CTA di atas, link strip di bawah ── */
+        /* ── Mobile: SATU baris — logo mark · link · CTA ──
+           Tanpa hamburger: hanya 3 link, menyembunyikannya justru menambah
+           satu ketukan untuk navigasi yang sebenarnya muat di layar.
+           Teks wordmark dan label CTA dipendekkan agar semuanya masuk
+           dalam satu baris ~60px, bukan dua baris ~120px. */
         @media (max-width: 767px) {
           .nav-inner {
-            flex-wrap: wrap;
-            gap: 0;
-            padding-block: 10px;
+            flex-wrap: nowrap;
+            gap: var(--spacing-8);
           }
 
-          .nav-wordmark { order: 1; }
-          .nav-right { order: 2; margin-left: auto; }
+          /* Sisakan logo mark; teks "Bersua" makan ~70px yang dibutuhkan link */
+          .nav-wordmark-text { display: none; }
 
           .nav-links {
-            order: 3;
-            flex-basis: 100%;
+            flex: 1;
+            justify-content: center;
             gap: var(--spacing-16);
-            margin-top: 10px;
-            /* Strip horizontal — 4 item terlalu sedikit untuk disembunyikan di hamburger */
+            min-width: 0;
+            /* Jaring pengaman bila label section memanjang di kemudian hari */
             overflow-x: auto;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
@@ -252,10 +258,24 @@ export default function Navbar() {
             min-height: 44px;
             display: inline-flex;
             align-items: center;
+            white-space: nowrap;
           }
 
-          .nav-cta { min-height: 44px; padding-block: 0; }
+          .nav-cta {
+            min-height: 44px;
+            padding: 0 14px;
+          }
+
+          .nav-cta-long { display: none; }
+          .nav-cta-short { display: inline; }
         }
+
+        /* Layar sangat sempit (≤360px): rapatkan jarak antar link */
+        @media (max-width: 360px) {
+          .nav-links { gap: 12px; }
+          .nav-cta { padding: 0 12px; }
+        }
+
       `}</style>
     </header>
   );

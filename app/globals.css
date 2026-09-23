@@ -69,14 +69,6 @@
   --nav-height: 60px;
 }
 
-/* Navbar mobile dua baris: brand+CTA di atas, strip link di bawah */
-@media (max-width: 767px) {
-  :root {
-    /* Dua baris + target sentuh 44px pada strip link */
-    --nav-height: 120px;
-  }
-}
-
 /* ─── Reset & Base ───────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
