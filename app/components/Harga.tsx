@@ -1,5 +1,6 @@
 import Section from "./Section";
 import CTAButton from "./CTAButton";
+
 import { WA_DEFAULT } from "@/app/lib/constants";
 
 /* Hover card memakai CSS transition (lihat .sol-card di <style> bawah), bukan
@@ -135,7 +136,7 @@ const SOLUTIONS: Solution[] = [
     description:
       "Untuk kebutuhan yang membutuhkan fungsi, integrasi, atau alur operasional bisnis Anda.",
     anchorPrice: "",
-    launchPrice: "Start from Rp3.999.000",
+    launchPrice: "Hubungi Kami",
     featuresLabel: "Contoh kebutuhan:",
     features: [
       "E-Commerce",
@@ -249,7 +250,11 @@ export default function Harga() {
       {/* Secondary consultation CTA */}
       <div className="harga-consult">
         <div>
-          <h3 className="harga-consult-t">Belum yakin solusi mana yang sesuai?</h3>
+          <h3 className="harga-consult-t">
+            Punya kebutuhan yang spesifik?
+            <br />
+            Belum yakin website seperti apa yang tepat untuk bisnis Anda?
+          </h3>
           <p className="harga-consult-b">
             Diskusikan kebutuhan bisnis Anda bersama kami.
           </p>
@@ -354,6 +359,24 @@ export default function Harga() {
           border: none;
         }
 
+        /* ── Gradient lembut kartu (Aurora) ── */
+        /* Biru & mint pastel dari token palet, sangat tipis */
+        .sol-card:not(.is-primary) {
+          background:
+            radial-gradient(90% 60% at 100% 0%, rgba(190,219,255,0.16) 0%, rgba(190,219,255,0) 60%),
+            radial-gradient(90% 60% at 0% 100%, rgba(164,244,207,0.10) 0%, rgba(164,244,207,0) 60%),
+            linear-gradient(165deg, #262829 0%, #202122 100%);
+        }
+        .sol-card.is-primary {
+          background:
+            radial-gradient(100% 70% at 100% 0%, rgba(190,219,255,0.7) 0%, rgba(190,219,255,0) 60%),
+            radial-gradient(100% 70% at 0% 100%, rgba(164,244,207,0.45) 0%, rgba(164,244,207,0) 60%),
+            #ffffff;
+        }
+
+        /* Garis tepi tipis memberi bentuk pada kartu gelap di atas latar gelap */
+        .sol-card:not(.is-primary) { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07); }
+
         /* Recommended badge — dark on white card */
         .sol-badge {
           align-self: flex-start;
@@ -362,7 +385,7 @@ export default function Harga() {
           border-radius: var(--radius-pill);
           padding: 4px 12px;
           font-size: var(--text-caption);
-          font-weight: var(--weight-medium);
+          font-weight: 500;
           letter-spacing: 0.6px;
           text-transform: uppercase;
         }
@@ -374,14 +397,14 @@ export default function Harga() {
 
         .sol-title {
           font-size: var(--text-subheading);
-          font-weight: var(--weight-display);
+          font-weight: 500;
           letter-spacing: var(--tracking-subheading);
           line-height: var(--leading-subheading);
         }
 
         .sol-positioning {
           font-size: var(--text-body);
-          font-weight: 500;
+          font-weight: 400;
           line-height: var(--leading-body);
           letter-spacing: var(--tracking-body);
         }
@@ -391,10 +414,10 @@ export default function Harga() {
           font-weight: 400;
           line-height: var(--leading-caption);
           letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.50);
+          color: rgba(255,255,255,0.72);
         }
 
-        .sol-card.is-primary .sol-desc { color: var(--color-ink-60); }
+        .sol-card.is-primary .sol-desc { color: rgba(26,26,26,0.72); }
 
         /* ── Pricing ── */
         .sol-pricing { display: flex; flex-direction: column; gap: 4px; }
@@ -404,7 +427,7 @@ export default function Harga() {
           font-size: var(--text-caption);
           font-weight: 400;
           letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.30);
+          color: rgba(255,255,255,0.5);
         }
 
         .sol-card.is-primary .sol-anchor { color: var(--color-ink-60); }
@@ -414,7 +437,7 @@ export default function Harga() {
         /* Founding price — primary display */
         .sol-launch-price {
           font-size: var(--text-heading);
-          font-weight: var(--weight-display);
+          font-weight: 500;
           line-height: var(--leading-heading);
           letter-spacing: var(--tracking-heading);
         }
@@ -422,9 +445,9 @@ export default function Harga() {
         /* Savings callout */
         .sol-savings {
           font-size: var(--text-caption);
-          font-weight: 500;
+          font-weight: 400;
           letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.45);
+          color: rgba(255,255,255,0.7);
           margin-top: 2px;
         }
 
@@ -438,7 +461,7 @@ export default function Harga() {
           font-weight: 400;
           line-height: var(--leading-caption);
           letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.35);
+          color: rgba(255,255,255,0.6);
           margin-top: 4px;
         }
 
@@ -464,11 +487,11 @@ export default function Harga() {
 
         .sol-features-label {
           font-size: var(--text-caption);
-          font-weight: var(--weight-medium);
+          font-weight: 400;
           text-transform: uppercase;
           letter-spacing: 0.6px;
           line-height: var(--leading-caption);
-          color: rgba(255,255,255,0.45);
+          color: rgba(255,255,255,0.6);
         }
 
         .sol-card.is-primary .sol-features-label { color: var(--color-ink-60); }
@@ -485,7 +508,7 @@ export default function Harga() {
           font-weight: 400;
           line-height: var(--leading-body);
           letter-spacing: var(--tracking-body);
-          color: rgba(255,255,255,0.60);
+          color: rgba(255,255,255,0.85);
           padding-left: var(--spacing-16);
           position: relative;
         }
@@ -500,7 +523,7 @@ export default function Harga() {
           top: 11px;
           width: 6px;
           height: 1px;
-          background-color: rgba(255,255,255,0.20);
+          background-color: rgba(255,255,255,0.4);
         }
 
         .sol-card.is-primary .sol-features li::before {
@@ -512,7 +535,7 @@ export default function Harga() {
           font-size: var(--text-caption);
           font-weight: 400;
           letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.25);
+          color: rgba(255,255,255,0.5);
           margin-top: var(--spacing-8);
           padding-left: 0;
         }
@@ -524,10 +547,10 @@ export default function Harga() {
         /* Timeline pengerjaan */
         .sol-timeline {
           font-size: var(--text-caption);
-          font-weight: var(--weight-medium);
+          font-weight: 400;
           letter-spacing: var(--tracking-caption);
           line-height: var(--leading-caption);
-          color: rgba(255,255,255,0.60);
+          color: rgba(255,255,255,0.8);
           padding-top: var(--spacing-16);
           border-top: 1px solid rgba(255,255,255,0.08);
         }
@@ -543,7 +566,7 @@ export default function Harga() {
           font-weight: 400;
           letter-spacing: var(--tracking-caption);
           line-height: var(--leading-caption);
-          color: rgba(255,255,255,0.45);
+          color: rgba(255,255,255,0.7);
           padding-top: var(--spacing-16);
           border-top: 1px solid rgba(255,255,255,0.08);
         }
@@ -570,13 +593,13 @@ export default function Harga() {
 
         .sol-custom-title {
           font-size: var(--text-subheading);
-          font-weight: var(--weight-display);
+          font-weight: 400;
           letter-spacing: var(--tracking-subheading);
         }
 
         .sol-custom-pos {
           font-size: var(--text-body);
-          font-weight: 500;
+          font-weight: 400;
           line-height: var(--leading-body);
           letter-spacing: var(--tracking-body);
         }
@@ -599,7 +622,7 @@ export default function Harga() {
 
         .sol-custom-price {
           font-size: var(--text-heading);
-          font-weight: var(--weight-display);
+          font-weight: 400;
           letter-spacing: var(--tracking-heading);
           white-space: nowrap;
         }
@@ -616,7 +639,7 @@ export default function Harga() {
 
         .harga-consult-t {
           font-size: var(--text-heading);
-          font-weight: var(--weight-display);
+          font-weight: 500;
           line-height: var(--leading-heading);
           letter-spacing: var(--tracking-heading);
           margin-bottom: var(--spacing-8);
@@ -628,7 +651,7 @@ export default function Harga() {
           font-weight: 400;
           line-height: var(--leading-body);
           letter-spacing: var(--tracking-body);
-          color: rgba(255,255,255,0.50);
+          color: rgba(255,255,255,0.72);
           max-width: 480px;
         }
 

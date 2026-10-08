@@ -26,6 +26,16 @@ export default function CTAPenutup() {
       </div>
 
       <style>{`
+        /* Latar foto tekstur abu (horizontal) di atas ink; gradasi gelap tipis
+           menjaga heading putih tetap terbaca di bagian yang terang. */
+        #mulai {
+          background-image:
+            linear-gradient(180deg, rgba(26,26,26,0.35) 0%, rgba(26,26,26,0.55) 100%),
+            url("/img/cta-bg-landscape.jpg");
+          background-size: cover;
+          background-position: center;
+        }
+
         /* Tanpa garis pemisah di bawah heading — section penutup dibiarkan bersih */
         #mulai .sec-body {
           border-top: none;

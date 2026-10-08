@@ -57,7 +57,9 @@ export default function Section({
       id={id}
       data-track-section={track}
       className={`sec section-pad${className ? ` ${className}` : ""}`}
-      style={{ backgroundColor: s.bg, color: s.fg }}
+      /* Bayangan 1px warna latar menutup celah subpiksel saat dua section
+         berwarna sama bertemu di posisi pecahan (terlihat sebagai garis). */
+      style={{ backgroundColor: s.bg, color: s.fg, boxShadow: `0 1px 0 0 ${s.bg}` }}
     >
       <div className="section-container">
         {hasHead ? (

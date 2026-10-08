@@ -29,7 +29,7 @@ const SITE_DESC =
 
 /* Preview WhatsApp — tautan ini paling sering dibagikan lewat WA (REQ-F8),
    jadi judul preview mengulang headline hero agar konsisten saat dibuka. */
-const OG_TITLE = "Partner Membangun Kredibilitas Digital Bisnis Anda";
+const OG_TITLE = "Partner membangun website yang tepat untuk bisnis Anda";
 const OG_DESC =
   "Website profil bisnis yang membuat calon pelanggan, partner, dan pasar global cukup yakin untuk memulai percakapan dengan Anda.";
 

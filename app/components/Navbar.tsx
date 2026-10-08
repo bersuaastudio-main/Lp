@@ -6,9 +6,9 @@ import { trackWAClick } from "@/app/lib/tracking";
 import { WA_NUMBER, WA_DEFAULT } from "@/app/lib/constants";
 
 /* Link nav — tiga titik keputusan: lihat contoh, lihat harga, baca FAQ.
- * "Portofolio" mengarah ke section kategori bisnis (kartu contoh halaman). */
+ * "Portofolio" mengarah ke section Contoh Hasil Kerja (showcase). */
 const NAV_LINKS = [
-  { id: "kategori", label: "Portofolio" },
+  { id: "contoh", label: "Portofolio" },
   { id: "harga", label: "Harga" },
   { id: "faq", label: "FAQ" },
 ];
@@ -74,16 +74,21 @@ export default function Navbar() {
     <header className="nav-root">
       <div className="section-container nav-inner">
         {/* Wordmark */}
-        <a href="#top" className="nav-wordmark" aria-label="Bersua — kembali ke atas">
+        <a href="#top" className="nav-wordmark" aria-label="Bersua Lab Studio — kembali ke atas">
           <Image
-            src="/img/logo-mark.png"
+            src="/img/logo-nav.png"
             alt=""
-            width={32}
-            height={32}
+            width={128}
+            height={106}
             priority
+            unoptimized /* PNG 128px transparan — tajam di layar 2x/3x */
             className="nav-logo"
           />
-          <span className="nav-wordmark-text">Bersua</span>
+          <span className="nav-wordmark-text">
+            Bersua Lab
+            <br />
+            Studio
+          </span>
         </a>
 
         {/* Link navigasi */}
@@ -136,21 +141,22 @@ export default function Navbar() {
         .nav-wordmark {
           display: inline-flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
           min-height: 44px;
           font-size: 17px;
-          font-weight: var(--weight-medium);
-          letter-spacing: -0.5px;
+          font-weight: 400;
+          line-height: 1.1;
+          letter-spacing: -0.3px;
           color: var(--color-studio-ink);
           text-decoration: none;
           flex-shrink: 0;
         }
 
-        /* Logo mark — tile gelap (bg ikut dari file), sudut membulat */
+        /* Logo mark — gelombang + titik, tanpa tile, warna Studio Ink */
         .nav-logo {
-          width: 32px;
-          height: 32px;
-          border-radius: 8px;
+          width: 34px;
+          height: auto;
+          border-radius: 0;
           flex-shrink: 0;
         }
 
@@ -164,7 +170,7 @@ export default function Navbar() {
 
         .nav-link {
           font-size: var(--text-body);
-          font-weight: 500;
+          font-weight: 400;
           letter-spacing: var(--tracking-body);
           color: var(--color-ink-60);
           text-decoration: none;
@@ -177,7 +183,7 @@ export default function Navbar() {
         .nav-link-num {
           font-variant-numeric: tabular-nums;
           font-size: 11px;
-          font-weight: var(--weight-display);
+          font-weight: 400;
           opacity: 0.45;
           margin-right: 5px;
         }
@@ -204,7 +210,7 @@ export default function Navbar() {
           background-color: var(--color-studio-ink);
           color: var(--color-card-white);
           font-size: var(--text-caption);
-          font-weight: 500;
+          font-weight: 400;
           letter-spacing: -0.2px;
           line-height: 1;
           padding: 11px 18px;

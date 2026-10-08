@@ -152,7 +152,7 @@ export default function Layanan() {
           top: var(--spacing-16);
           right: var(--spacing-16);
           font-size: var(--text-caption);
-          font-weight: var(--weight-display);
+          font-weight: 400;
           color: var(--color-studio-ink);
         }
 
@@ -166,7 +166,7 @@ export default function Layanan() {
           font-size: var(--text-subheading);
           line-height: var(--leading-subheading);
           letter-spacing: var(--tracking-subheading);
-          font-weight: var(--weight-display);
+          font-weight: 400;
         }
 
         .ly-tagline {
@@ -193,7 +193,7 @@ export default function Layanan() {
           font-size: var(--text-heading);
           line-height: var(--leading-heading);
           letter-spacing: var(--tracking-heading);
-          font-weight: var(--weight-display);
+          font-weight: 400;
           white-space: pre-line;
         }
 
@@ -221,7 +221,7 @@ export default function Layanan() {
 
         .ly-check {
           font-size: var(--text-caption);
-          font-weight: var(--weight-display);
+          font-weight: 400;
           flex-shrink: 0;
           color: var(--color-studio-ink);
         }

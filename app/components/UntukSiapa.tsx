@@ -1,7 +1,9 @@
-import Section from "./Section";
+import Image from "next/image";
 
 /**
  * 03 · Untuk Siapa — naskah content.md v2.3 S3.
+ * Gaya: foto full-bleed + judul terpusat + empat kartu kaca melayang
+ * di kiri-kanan subjek (pola hero "Superhuman").
  * Tiap kartu punya anchor sendiri supaya DM outbound bisa menaut langsung
  * ke keadaan yang relevan: #pertanyaan-berulang · #minta-profil · #sudah-iklan
  */
@@ -51,123 +53,222 @@ const keadaan = [
 
 export default function UntukSiapa() {
   return (
-    <Section
-      id="untuk-siapa"
-      track="untuk_siapa"
-      heading="Dibangun untuk bisnis yang ingin bergerak lebih jauh."
-      surface="white"
-    >
-      <div className="grid-2">
-        {keadaan.map((k) => (
-          <div key={k.id} id={k.id} className="us-card" style={{ backgroundColor: k.tint }}>
-            <div className="us-head">
-              <p className="us-lead">{k.lead}</p>
-              <svg
-                className="us-icon"
-                viewBox="0 -960 960 960"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path d={ICONS[k.icon]} />
-              </svg>
+    <section id="untuk-siapa" data-track-section="untuk_siapa" className="us-sec">
+      <div className="us-stage">
+        <Image
+          src="/img/untuk-siapa-bg-2.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          unoptimized /* WebP 1672px, 95KB — sudah dioptimalkan */
+          className="us-bg"
+        />
+
+        <header className="us-heading-wrap">
+          <h2 className="us-heading">
+            Dibangun untuk bisnis yang ingin bergerak lebih jauh.
+          </h2>
+        </header>
+
+        <div className="us-floats">
+          {keadaan.map((k, i) => (
+            <div key={k.id} id={k.id} className={`us-card us-pos-${i + 1}`}>
+              <div className="us-card-head">
+                <span className="us-icon-wrap">
+                  <svg className="us-icon" viewBox="0 -960 960 960" aria-hidden="true" focusable="false">
+                    <path d={ICONS[k.icon]} />
+                  </svg>
+                </span>
+                <p className="us-lead">{k.lead}</p>
+              </div>
+              <p className="us-body">{k.body}</p>
             </div>
-            <p className="us-body">{k.body}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       <style>{`
-        /* Layout mengikuti pola "label kecil di atas · icon kanan atas ·
-         * pernyataan besar didorong ke bawah" — card punya aspect ratio
-         * supaya area kosong di tengah terasa disengaja. */
-        .us-card {
+        .us-sec {
           position: relative;
-          border-radius: var(--radius-xl);
-          padding: var(--card-padding);
-          display: flex;
-          flex-direction: column;
+          background: var(--color-studio-ink); /* sama dengan section Showcase di bawahnya */
+          color: var(--color-card-white);
+        }
+
+        .us-stage {
+          position: relative;
+          height: clamp(600px, 56.25vw, 1000px);
+          overflow: hidden;
+        }
+
+        .us-bg {
+          object-fit: cover;
+          object-position: center 62%;
+          border-radius: 0;
+        }
+
+        /* Judul di area langit yang terang — teks gelap */
+        .us-heading-wrap {
+          position: relative;
+          z-index: 1;
+          padding: clamp(40px, 4.5vw, 72px) var(--spacing-24) 0;
+          text-align: center;
+        }
+
+        .us-heading {
+          margin-inline: auto;
+          max-width: 13em;
+          font-size: clamp(30px, 3.6vw, 56px);
+          line-height: 1.05;
+          letter-spacing: -0.035em;
           color: var(--color-studio-ink);
-          aspect-ratio: 16 / 9;
-        }
-
-        .us-head {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: var(--spacing-16);
-        }
-
-        /* Label kecil — nama keadaan */
-        .us-lead {
-          font-size: var(--text-subheading);
-          line-height: var(--leading-subheading);
-          letter-spacing: var(--tracking-subheading);
-          font-weight: 400;
-          opacity: 0.85;
-        }
-
-        .us-icon {
-          flex-shrink: 0;
-          width: 48px;
-          height: 48px;
-          fill: currentColor;
-        }
-
-        /* Pernyataan utama — besar, medium, di dasar card */
-        .us-body {
-          margin-top: auto;
-          padding-top: var(--spacing-32);
-          max-width: 540px;
-          font-size: var(--text-heading);
-          line-height: var(--leading-heading);
-          letter-spacing: var(--tracking-heading);
-          font-weight: 500;
           text-wrap: balance;
         }
 
-        /* Tablet: 2 kolom masih muat, tapi kartu jadi persegi & tipografi turun
-           satu tingkat supaya judul panjang tidak pecah 3 baris */
+        /* ── Kartu kaca melayang ── */
+        /* Gradasi di dasar foto: hitam rumput → ink, menyatu ke section berikutnya */
+        .us-stage::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 32%;
+          pointer-events: none;
+          background: linear-gradient(
+            180deg,
+            rgba(26, 26, 26, 0) 0%,
+            rgba(26, 26, 26, 0.55) 45%,
+            rgba(26, 26, 26, 0.9) 75%,
+            #1a1a1a 100%
+          );
+        }
+
+        .us-floats {
+          z-index: 2;
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+
+        .us-card {
+          position: absolute;
+          width: clamp(240px, 19vw, 300px);
+          padding: 18px 20px 20px;
+          border-radius: 14px;
+          background: rgba(24, 26, 20, 0.38);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          backdrop-filter: blur(18px) saturate(1.2);
+          -webkit-backdrop-filter: blur(18px) saturate(1.2);
+          box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.45);
+          pointer-events: auto;
+          scroll-margin-top: calc(var(--nav-height) + 16px);
+          animation: us-float 7s ease-in-out infinite;
+        }
+
+        /* Posisi: dua di kiri, dua di kanan — menjauhi layar & sosok di tengah */
+        .us-pos-1 { left: 3%;  top: 42%; }
+        .us-pos-2 { left: 5%;  top: 68%; animation-delay: -2.5s; }
+        .us-pos-3 { right: 3%; top: 40%; animation-delay: -1.2s; }
+        .us-pos-4 { right: 5%; top: 66%; animation-delay: -4s; }
+
+        @keyframes us-float {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-8px); }
+        }
+
+        .us-card-head {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 10px;
+        }
+
+        .us-icon-wrap {
+          flex-shrink: 0;
+          width: 30px;
+          height: 30px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.14);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .us-icon { width: 18px; height: 18px; fill: currentColor; }
+
+        .us-lead {
+          font-size: 16px;
+          line-height: 1.3;
+          letter-spacing: -0.3px;
+          color: var(--color-card-white);
+        }
+
+        .us-body {
+          font-size: 14px;
+          line-height: 1.5;
+          letter-spacing: -0.1px;
+          color: rgba(255, 255, 255, 0.82);
+        }
+
+        /* ── Tablet & mobile: foto jadi banner, kartu tersusun di bawahnya ── */
         @media (max-width: 1100px) {
-          .us-card { aspect-ratio: 1 / 1; }
-          .us-icon { width: 40px; height: 40px; }
-          .us-lead {
-            font-size: var(--text-subheading);
-            line-height: var(--leading-subheading);
-            letter-spacing: var(--tracking-subheading);
-          }
-          .us-body {
-            font-size: 22px;
-            line-height: 1.3;
-            letter-spacing: -0.4px;
-          }
-        }
+          .us-stage { height: auto; overflow: visible; }
 
-        /* Mobile: 1 kolom. aspect-ratio dilepas — tinggi mengikuti isi,
-           jadi teks tidak pernah terpotong di layar sempit */
-        @media (max-width: 640px) {
-          #untuk-siapa .grid-2 { grid-template-columns: 1fr; }
+          .us-bg {
+            position: relative !important;
+            height: auto !important;
+            aspect-ratio: 3 / 2;
+            object-position: center bottom;
+          }
+
+          .us-heading-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding-top: clamp(24px, 5vw, 56px);
+          }
+
+          .us-heading { font-size: clamp(24px, 4.4vw, 40px); }
+
+          /* Gradasi pindah ke dasar banner foto (rasio 3:2), bukan dasar stage */
+          .us-stage::after {
+            bottom: auto;
+            top: calc(100vw / 1.5 - 160px);
+            height: 160px;
+          }
+
+          .us-floats {
+            position: relative;
+            inset: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 var(--spacing-24) var(--spacing-64);
+            margin-top: -48px;
+          }
+
           .us-card {
-            aspect-ratio: auto;
-            min-height: 200px;
-            padding: var(--spacing-24);
+            position: relative;
+            left: auto; right: auto; top: auto;
+            width: auto;
+            animation: none;
           }
-          .us-lead {
-            font-size: var(--text-body);
-            line-height: var(--leading-body);
-            letter-spacing: var(--tracking-body);
-          }
-          .us-body {
-            font-size: var(--text-subheading);
-            line-height: var(--leading-subheading);
-            letter-spacing: var(--tracking-subheading);
-            padding-top: var(--spacing-24);
-            max-width: none;
-          }
-          .us-icon { width: 32px; height: 32px; }
         }
 
-        .us-link { align-self: flex-start; }
+        @media (max-width: 640px) {
+          .us-floats { grid-template-columns: 1fr; margin-top: -24px; padding-bottom: var(--spacing-48); }
+          .us-heading { max-width: 11em; font-size: clamp(22px, 6.2vw, 26px); }
+          .us-heading-wrap { padding-top: 20px; }
+          /* Banner lebih tinggi supaya judul punya ruang langit, tidak menimpa layar */
+          .us-bg { aspect-ratio: 4 / 5; object-position: center 70%; }
+          .us-stage::after { top: calc(100vw * 1.25 - 160px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .us-card { animation: none; }
+        }
       `}</style>
-    </Section>
+    </section>
   );
 }

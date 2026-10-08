@@ -73,7 +73,7 @@ export default function Demo() {
           font-size: var(--text-subheading);
           line-height: var(--leading-subheading);
           letter-spacing: var(--tracking-subheading);
-          font-weight: var(--weight-display);
+          font-weight: 400;
         }
 
         .demo-type {

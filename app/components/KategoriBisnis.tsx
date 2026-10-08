@@ -9,16 +9,12 @@ import { WA_DEFAULT } from "@/app/lib/constants";
 /**
  * 02 · Kategori Bisnis — tanpa header. Kartunya yang bicara.
  *
- * Mengikuti komponen "Collaboration Project Card" di DESIGN (1).md:
- * gambar full-bleed mengisi kartu, radius 12px, tanpa border, tanpa shadow,
- * teks putih di-overlay pojok kiri atas (20px/600 nama, 14px/400 keterangan).
+ * Gaya kartu portofolio editorial: gambar 4:5 bersudut tegas tanpa
+ * overlay, lalu satu baris keterangan di bawahnya — nama di kiri (ink,
+ * regular), kategori di kanan (abu, regular).
  *
  * Kartunya sengaja mulai terlihat dari layar pertama — hero dipendekkan ke
  * ~70svh supaya baris pertama kartu mengintip di bawah lipatan.
- *
- * Gambar: mockup device di dalam .kb-media via <Image fill />, di-crop ke
- * 16:10 (object-fit: cover). Overlay gelap (.kb-scrim) menjaga teks putih
- * tetap terbaca di atas foto yang cenderung terang.
  *
  * REQ-C2.4 — dilarang menambah "berpengalaman", "spesialis", atau
  * "sudah menangani" di sini.
@@ -85,36 +81,14 @@ export default function KategoriBisnis() {
                 /* Dua kartu pertama mengintip di layar pertama — kandidat LCP */
                 priority={i < 2}
                 className="kb-img"
+                /* File sumber sudah WebP terkompresi & berukuran web (~1250px).
+                   Dikompres ulang oleh optimizer membuatnya buram — sajikan apa adanya. */
+                unoptimized
               />
-              <span className="kb-scrim" aria-hidden="true" />
-              <div className="kb-overlay">
-                <h3 className="kb-name">
-                  <span className="kb-num">{k.num}</span>
-                  <span className="kb-dash" aria-hidden="true">—</span>
-                  {k.name}
-                </h3>
-                <p className="kb-note">{k.note}</p>
-              </div>
-              <div className="kb-for">
-                <p className="kb-for-label">Untuk:</p>
-                <ul className="kb-tags">
-                  {k.untuk.map((u) => (
-                    <li key={u} className="kb-tag">{u}</li>
-                  ))}
-                </ul>
-              </div>
-              <span className="kb-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="20" height="20">
-                  <path
-                    d="M5 12h14M13 6l6 6-6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+            </div>
+            <div className="kb-caption">
+              <h3 className="kb-name">{k.name}</h3>
+              <p className="kb-note">{k.untuk.slice(0, 3).join(", ")}</p>
             </div>
           </a>
         ))}
@@ -129,156 +103,78 @@ export default function KategoriBisnis() {
           .kb-sec { padding-top: var(--spacing-24); }
         }
 
+        /* Jarak antar-baris lebih lega karena keterangan kini di bawah gambar */
+        .kb-sec .grid-2 { row-gap: clamp(40px, 5vw, 72px); }
+
         .kb-card {
           display: block;
           text-decoration: none;
           color: inherit;
-          border-radius: var(--radius-xl);
-          transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
           -webkit-tap-highlight-color: transparent;
         }
-
-        .kb-card:hover { transform: translateY(-4px); }
 
         .kb-card:focus-visible {
           outline: 2px solid var(--color-studio-ink);
           outline-offset: 4px;
         }
 
-        /* 4:5 mengikuti proporsi mockup (portrait 3:4 & persegi 1:1) —
-           gambar hampir utuh, tanpa letterbox */
+        /* Gambar bersudut tegas, tanpa overlay — mengikuti referensi.
+           4:5 mendekati proporsi mockup asli (persegi 1:1 & potret ~3:4),
+           jadi crop-nya minimal dan device tetap utuh. */
         .kb-media {
           position: relative;
           aspect-ratio: 4 / 5;
-          border-radius: var(--radius-xl);
           overflow: hidden;
-          background-color: var(--color-studio-ink);
+          background-color: var(--color-ink-08);
         }
 
         .kb-img {
           object-fit: cover;
           object-position: center;
-          transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+          border-radius: 0;
+          transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .kb-card:hover .kb-img { transform: scale(1.04); }
+        .kb-card:hover .kb-img { transform: scale(1.03); }
 
-        /* Penjaga keterbacaan teks putih di atas foto */
-        .kb-scrim {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.28) 0%,
-            rgba(0, 0, 0, 0) 32%,
-            rgba(0, 0, 0, 0) 52%,
-            rgba(0, 0, 0, 0.42) 100%
-          );
-        }
-
-        .kb-overlay {
-          position: absolute;
-          top: var(--spacing-24);
-          left: var(--spacing-24);
-          right: var(--spacing-24);
+        /* Keterangan di bawah gambar: nama kiri (ink), kategori kanan (abu) */
+        .kb-caption {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          gap: var(--spacing-16);
+          padding-top: var(--spacing-16);
         }
 
         .kb-name {
-          font-size: var(--text-subheading);
-          line-height: var(--leading-subheading);
-          letter-spacing: var(--tracking-subheading);
-          font-weight: var(--weight-medium);
-          color: var(--color-card-white);
-        }
-
-        .kb-num {
-          font-variant-numeric: tabular-nums;
-          opacity: 0.7;
-        }
-
-        .kb-dash {
-          margin-inline: 8px;
-          opacity: 0.5;
-        }
-
-        .kb-note {
-          margin-top: 2px;
-          font-size: var(--text-caption);
-          line-height: var(--leading-caption);
-          letter-spacing: var(--tracking-caption);
+          font-size: clamp(16px, 1.3vw, 18px);
+          line-height: 1.4;
+          letter-spacing: -0.2px;
           font-weight: 400;
-          color: rgba(255, 255, 255, 0.75);
-        }
-
-        /* "Untuk:" + tag pil — pojok kiri bawah */
-        .kb-for {
-          position: absolute;
-          left: var(--spacing-24);
-          right: 84px; /* ruang untuk tombol panah */
-          bottom: var(--spacing-24);
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-8);
-        }
-
-        /* Tombol panah — pojok kanan bawah, seperti referensi */
-        .kb-arrow {
-          position: absolute;
-          right: var(--spacing-24);
-          bottom: var(--spacing-24);
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          background-color: var(--color-card-white);
           color: var(--color-studio-ink);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
-        }
-
-        .kb-card:hover .kb-arrow { transform: translate(2px, -2px); }
-
-        .kb-for-label {
-          font-size: var(--text-caption);
-          line-height: var(--leading-caption);
-          letter-spacing: var(--tracking-caption);
-          font-weight: 500;
-          color: rgba(255, 255, 255, 0.6);
-        }
-
-        .kb-tags {
-          list-style: none;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 6px;
-        }
-
-        .kb-tag {
-          font-size: var(--text-caption);
-          line-height: 1;
-          letter-spacing: var(--tracking-caption);
-          font-weight: 500;
-          color: var(--color-card-white);
-          padding: 7px 12px;
-          border-radius: var(--radius-pill);
-          background-color: rgba(255, 255, 255, 0.16);
           white-space: nowrap;
         }
 
+        .kb-note {
+          font-size: clamp(14px, 1.2vw, 17px);
+          line-height: 1.4;
+          letter-spacing: -0.2px;
+          font-weight: 400;
+          color: rgba(26, 26, 26, 0.32);
+          text-align: right;
+        }
+
+        .kb-card:hover .kb-note { color: var(--color-ink-60); }
+        .kb-note { transition: color 0.3s ease; }
+
         @media (max-width: 640px) {
-          .kb-media { aspect-ratio: 4 / 5; }
-          .kb-overlay { top: var(--spacing-16); left: var(--spacing-16); right: var(--spacing-16); }
-          .kb-for { left: var(--spacing-16); right: 68px; bottom: var(--spacing-16); }
-          .kb-arrow { right: var(--spacing-16); bottom: var(--spacing-16); width: 40px; height: 40px; }
-          .kb-tag { padding: 6px 10px; font-size: 12px; }
+          .kb-caption { flex-direction: column; gap: 2px; padding-top: 12px; }
+          .kb-note { text-align: left; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .kb-card, .kb-img { transition: none; }
-          .kb-card:hover { transform: none; }
+          .kb-img { transition: none; }
           .kb-card:hover .kb-img { transform: none; }
-          .kb-card:hover .kb-arrow { transform: none; }
         }
       `}</style>
     </Section>

@@ -6,6 +6,7 @@ import { initScrollDepthTracking, initSectionViewTracking } from "@/app/lib/trac
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import KategoriBisnis from "./components/KategoriBisnis";
+import Showcase from "./components/Showcase";
 import UntukSiapa from "./components/UntukSiapa";
 import Harga from "./components/Harga";
 import ProseKerja from "./components/ProseKerja";
@@ -37,17 +38,17 @@ export default function Home() {
         {/* 03 — Untuk siapa: tiga keadaan pemicu, anchor tujuan DM */}
         <UntukSiapa />
 
-        {/* 04 — Contoh hasil kerja: komponen Demo.tsx sengaja belum dirender
-            (aset contoh belum siap). Render <Demo /> di sini saat siap. */}
+        {/* 04 — Contoh hasil kerja: panggung showcase + tab thumbnail */}
+        <Showcase />
+
+        {/* Founder quote — latar ink, jembatan showcase → harga */}
+        <Tentang />
 
         {/* 05 — Harga: solution-based pricing */}
         <Harga />
 
         {/* 07 — Cara kerja: empat langkah + dua batasan */}
         <ProseKerja />
-
-        {/* 08 — Siapa yang mengerjakan */}
-        <Tentang />
 
         {/* 09 — Pertanyaan */}
         <FAQ />
