@@ -1,53 +1,79 @@
+"use client";
+
 import Image from "next/image";
+import { selectShowcase } from "./Showcase";
 
 /**
- * 03 · Untuk Siapa — naskah content.md v2.3 S3.
+ * 02 · Untuk Siapa — gabungan section Kategori + Untuk Siapa.
  * Gaya: foto full-bleed + judul terpusat + empat kartu kaca melayang
  * di kiri-kanan subjek (pola hero "Superhuman").
- * Tiap kartu punya anchor sendiri supaya DM outbound bisa menaut langsung
- * ke keadaan yang relevan: #pertanyaan-berulang · #minta-profil · #sudah-iklan
+ *
+ * Tiap kartu = satu jenis bisnis + satu kalimat konkret tentang apa yang dicari
+ * pembelinya. Klik kartu TIDAK membuka WhatsApp: halaman bergulir ke Featured
+ * Project dan tab portofolio yang relevan langsung aktif (`selectShowcase`).
  */
-/* Material Symbols Outlined (fonts.google.com/icons) — inline SVG path,
- * viewBox "0 -960 960 960". Nama icon: public · verified · trending_up · hub */
-const ICONS: Record<string, string> = {
-  public:
-    "M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm-40-82v-78q-33 0-56.5-23.5T360-320v-40L168-552q-3 18-5.5 36t-2.5 36q0 121 79.5 212T440-162Zm276-102q20-22 36-47.5t26.5-53q10.5-27.5 16-56.5t5.5-59q0-98-54.5-179T600-776v16q0 33-23.5 56.5T520-680h-80v80q0 17-11.5 28.5T400-560h-80v80h240q17 0 28.5 11.5T600-440v120h40q26 0 47 15.5t29 40.5Z",
-  verified:
-    "m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z",
-  trending_up:
-    "m136-240-56-56 296-298 160 160 208-206H640v-80h240v240h-80v-104L536-320 376-480 136-240Z",
-  hub:
-    "M240-40q-50 0-85-35t-35-85q0-50 35-85t85-35q14 0 26 3t23 8l57-71q-28-31-39-70t-5-78l-81-27q-17 25-43 40t-58 15q-50 0-85-35T0-580q0-50 35-85t85-35q50 0 85 35t35 85v8l81 28q20-36 53.5-61t75.5-32v-87q-39-11-64.5-42.5T360-840q0-50 35-85t85-35q50 0 85 35t35 85q0 42-26 73.5T510-724v87q42 7 75.5 32t53.5 61l81-28v-8q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35q-32 0-58.5-15T739-515l-81 27q6 39-5 77.5T614-340l57 70q11-5 23-7.5t26-2.5q50 0 85 35t35 85q0 50-35 85t-85 35q-50 0-85-35t-35-85q0-20 6.5-38.5T624-232l-57-71q-41 23-87.5 23T392-303l-56 71q11 15 17.5 33.5T360-160q0 50-35 85t-85 35ZM120-540q17 0 28.5-11.5T160-580q0-17-11.5-28.5T120-620q-17 0-28.5 11.5T80-580q0 17 11.5 28.5T120-540Zm120 420q17 0 28.5-11.5T280-160q0-17-11.5-28.5T240-200q-17 0-28.5 11.5T200-160q0 17 11.5 28.5T240-120Zm240-680q17 0 28.5-11.5T520-840q0-17-11.5-28.5T480-880q-17 0-28.5 11.5T440-840q0 17 11.5 28.5T480-800Zm0 440q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29Zm240 240q17 0 28.5-11.5T760-160q0-17-11.5-28.5T720-200q-17 0-28.5 11.5T680-160q0 17 11.5 28.5T720-120Zm120-420q17 0 28.5-11.5T880-580q0-17-11.5-28.5T840-620q-17 0-28.5 11.5T800-580q0 17 11.5 28.5T840-540ZM480-840ZM120-580Zm360 120Zm360-120ZM240-160Zm480 0Z",
+
+/* Ikon garis sederhana, viewBox 24 — stroke mengikuti currentColor */
+const ICONS: Record<string, React.ReactNode> = {
+  supplier: (
+    <>
+      <path d="M2.5 6.5h11v9h-11z" />
+      <path d="M13.5 9.5h4l3 3.2v2.8h-7" />
+      <circle cx="6.5" cy="17" r="1.8" />
+      <circle cx="16.5" cy="17" r="1.8" />
+    </>
+  ),
+  jasa: (
+    <>
+      <rect x="3" y="7" width="18" height="12.5" rx="2" />
+      <path d="M9 7V5.2C9 4.5 9.5 4 10.2 4h3.6c.7 0 1.2.5 1.2 1.2V7" />
+      <path d="M3 12.5h18" />
+    </>
+  ),
+  brand: (
+    <>
+      <path d="M5.5 8h13l-1 12h-11z" />
+      <path d="M9 8V6.8a3 3 0 0 1 6 0V8" />
+    </>
+  ),
+  hospitality: (
+    <>
+      <path d="M4 20.5V5.5L12 3l8 2.5v15" />
+      <path d="M2.5 20.5h19" />
+      <path d="M8.5 9h1.5M14 9h1.5M8.5 13h1.5M14 13h1.5M10.5 20.5v-3.5h3v3.5" />
+    </>
+  ),
 };
 
-const keadaan = [
+/* `tab` = indeks portofolio di Showcase yang dibuka saat kartu diklik */
+const jenis = [
   {
-    id: "pasar-global",
-    icon: "public",
-    lead: "Menjangkau pasar global",
-    body: "Tampilkan bisnis Anda dengan standar yang siap diperkenalkan ke pasar yang lebih luas.",
-    tint: "var(--color-powder-blue)",
+    id: "supplier-distributor",
+    icon: "supplier",
+    lead: "Supplier dan distributor",
+    body: "Pembeli grosir memeriksa kapasitas, legalitas, dan jangkauan Anda sebelum menghubungi.",
+    tab: 1, // Hayati House
   },
   {
-    id: "kredibilitas-awal",
-    icon: "verified",
-    lead: "Membangun kredibilitas sejak awal",
-    body: "Bahkan bagi bisnis yang baru merintis, kehadiran digital yang tepat dapat menjadi fondasi kepercayaan.",
-    tint: "var(--color-mint-wash)",
+    id: "jasa-profesional",
+    icon: "jasa",
+    lead: "Jasa profesional",
+    body: "Klien membeli keahlian dan cara kerja — keduanya perlu terlihat sebelum percakapan dimulai.",
+    tab: 2, // Aruna Energi
   },
   {
-    id: "naik-kelas",
-    icon: "trending_up",
-    lead: "Naik kelas",
-    body: "Ketika kualitas bisnis berkembang, digital presence Anda seharusnya ikut berkembang.",
-    tint: "var(--color-blush-tint)",
+    id: "brand-produk",
+    icon: "brand",
+    lead: "Brand dan produk",
+    body: "Harga premium perlu cerita di balik produknya, bukan sekadar katalog.",
+    tab: 0, // Gatra
   },
   {
-    id: "peluang-baru",
-    icon: "hub",
-    lead: "Membuka peluang baru",
-    body: "Jadikan website sebagai pintu masuk bagi pelanggan, partner, dan peluang bisnis berikutnya.",
-    tint: "var(--color-cream-paper)",
+    id: "hospitality-properti",
+    icon: "hospitality",
+    lead: "Hospitality dan properti",
+    body: "Tamu memesan suasana — foto dan lokasi harus meyakinkan sejak layar pertama.",
+    tab: 3, // Sakhia
   },
 ];
 
@@ -65,24 +91,37 @@ export default function UntukSiapa() {
         />
 
         <header className="us-heading-wrap">
-          <h2 className="us-heading">
-            Dibangun untuk bisnis yang ingin bergerak lebih jauh.
-          </h2>
+          <h2 className="us-heading">Untuk bisnis seperti apa Bersua bekerja?</h2>
         </header>
 
         <div className="us-floats">
-          {keadaan.map((k, i) => (
-            <div key={k.id} id={k.id} className={`us-card us-pos-${i + 1}`}>
+          {jenis.map((k, i) => (
+            <a
+              key={k.id}
+              id={k.id}
+              href="#contoh"
+              className={`us-card us-pos-${i + 1}`}
+              onClick={(e) => {
+                e.preventDefault();
+                selectShowcase(k.tab);
+              }}
+            >
               <div className="us-card-head">
                 <span className="us-icon-wrap">
-                  <svg className="us-icon" viewBox="0 -960 960 960" aria-hidden="true" focusable="false">
-                    <path d={ICONS[k.icon]} />
+                  <svg className="us-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    {ICONS[k.icon]}
                   </svg>
                 </span>
                 <p className="us-lead">{k.lead}</p>
               </div>
               <p className="us-body">{k.body}</p>
-            </div>
+              <span className="us-link">
+                Lihat contoh
+                <svg viewBox="0 0 14 14" width="12" height="12" fill="none" aria-hidden="true">
+                  <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </a>
           ))}
         </div>
       </div>
@@ -166,10 +205,10 @@ export default function UntukSiapa() {
         }
 
         /* Posisi: dua di kiri, dua di kanan — menjauhi layar & sosok di tengah */
-        .us-pos-1 { left: 3%;  top: 42%; }
-        .us-pos-2 { left: 5%;  top: 68%; animation-delay: -2.5s; }
-        .us-pos-3 { right: 3%; top: 40%; animation-delay: -1.2s; }
-        .us-pos-4 { right: 5%; top: 66%; animation-delay: -4s; }
+        .us-pos-1 { left: 3%;  top: 34%; }
+        .us-pos-2 { left: 5%;  top: 64%; animation-delay: -2.5s; }
+        .us-pos-3 { right: 3%; top: 32%; animation-delay: -1.2s; }
+        .us-pos-4 { right: 5%; top: 62%; animation-delay: -4s; }
 
         @keyframes us-float {
           0%, 100% { transform: translateY(0); }
@@ -194,7 +233,50 @@ export default function UntukSiapa() {
           justify-content: center;
         }
 
-        .us-icon { width: 18px; height: 18px; fill: currentColor; }
+        .us-icon {
+          width: 18px;
+          height: 18px;
+          fill: none;
+          stroke: currentColor;
+          stroke-width: 1.6;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        /* Kartu = tautan ke contoh portofolio */
+        a.us-card {
+          display: block;
+          text-decoration: none;
+          color: inherit;
+          cursor: pointer;
+          transition: background-color 0.25s ease, border-color 0.25s ease;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        a.us-card:hover {
+          background: rgba(24, 26, 20, 0.55);
+          border-color: rgba(255, 255, 255, 0.32);
+        }
+
+        a.us-card:focus-visible {
+          outline: 2px solid var(--color-card-white);
+          outline-offset: 3px;
+        }
+
+        .us-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 12px;
+          font-size: 13px;
+          letter-spacing: -0.1px;
+          color: var(--color-card-white);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+          padding-bottom: 2px;
+        }
+
+        .us-link svg { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+        a.us-card:hover .us-link svg { transform: translateX(3px); }
 
         .us-lead {
           font-size: 16px;

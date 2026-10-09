@@ -1,7 +1,7 @@
 "use client";
 
-import { trackWAClick } from "@/app/lib/tracking";
 import { WA_NUMBER, WA_DEFAULT } from "@/app/lib/constants";
+import { openLeadForm } from "./LeadForm";
 
 interface CTAButtonProps {
   location: string;
@@ -12,6 +12,8 @@ interface CTAButtonProps {
   inverted?: boolean;
   /** "link" untuk tautan teks bergaris bawah, bukan tombol terisi. */
   variant?: "button" | "link";
+  /** Paket yang langsung terpilih di form leads (mis. dari kartu harga). */
+  paket?: string;
   children: React.ReactNode;
 }
 
@@ -26,6 +28,7 @@ export default function CTAButton({
   fullWidth = false,
   inverted = false,
   variant = "button",
+  paket,
   children,
 }: CTAButtonProps) {
   const base =
@@ -41,8 +44,12 @@ export default function CTAButton({
       target="_blank"
       rel="noopener noreferrer"
       className={`${base} ${fullWidth && variant !== "link" ? "btn-primary-full" : ""} ${className}`}
-      onClick={() => trackWAClick(location)}
-      aria-label={`Hubungi via WhatsApp dari ${location}`}
+      /* Buka form leads dulu; href tetap ada sebagai cadangan tanpa JavaScript */
+      onClick={(e) => {
+        e.preventDefault();
+        openLeadForm({ location, paket });
+      }}
+      aria-haspopup="dialog"
     >
       {children}
     </a>

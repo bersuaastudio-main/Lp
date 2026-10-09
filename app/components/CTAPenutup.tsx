@@ -1,11 +1,14 @@
 import Section from "./Section";
 import CTAButton from "./CTAButton";
-import { WA_DEFAULT } from "@/app/lib/constants";
+
+/* Label khusus penutup — ajakan yang lebih personal di akhir halaman.
+   Pesan WA ikut menyebut "diskusi" supaya isi chat sama dengan tombolnya. */
+const LABEL = "Diskusikan Bisnis Anda";
+const MESSAGE =
+  "Halo Bersua, saya ingin *mendiskusikan bisnis saya* untuk dibuatkan website.\n\nNama bisnis: *[ ]*\nBidang usaha: *[ ]*";
 
 /** 09 · Mulai — naskah dari content.md S9. Menyebut apa yang terjadi setelah klik (REQ-C9.2). */
 export default function CTAPenutup() {
-  const message = WA_DEFAULT;
-
   return (
     <Section
       id="mulai"
@@ -15,8 +18,8 @@ export default function CTAPenutup() {
     >
       <div style={{ maxWidth: 620, marginInline: "auto", textAlign: "center" }}>
         <div className="ctap-wrap">
-          <CTAButton location="cta_penutup" message={message} inverted>
-            Konsultasi Gratis
+          <CTAButton location="cta_penutup" message={MESSAGE} inverted>
+            {LABEL}
           </CTAButton>
         </div>
       </div>

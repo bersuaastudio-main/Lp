@@ -36,6 +36,7 @@ export default function Section({
   track,
   heading,
   sub,
+  kicker,
   surface = "cream",
   className = "",
   children,
@@ -45,6 +46,8 @@ export default function Section({
   /** Tanpa heading, seluruh blok header dilewati — section berdiri dari kontennya saja. */
   heading?: string;
   sub?: string;
+  /** Konten pembuka di atas judul (mis. kutipan founder di section Harga). */
+  kicker?: React.ReactNode;
   surface?: Surface;
   className?: string;
   children: React.ReactNode;
@@ -64,6 +67,7 @@ export default function Section({
       <div className="section-container">
         {hasHead ? (
           <header className="sec-head">
+            {kicker}
             <h2 className="sec-heading">{heading}</h2>
 
             {sub ? (

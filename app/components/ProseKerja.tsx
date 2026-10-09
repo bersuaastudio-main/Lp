@@ -6,9 +6,10 @@ import Section from "./Section";
 /**
  * 07 · Cara Kerja — naskah content.md v2.3 S7.
  *
- * Format dua kolom: kiri = judul + daftar tahap (accordion, satu terbuka),
- * kanan = panel visual yang menampilkan tahap aktif. Tahap berganti otomatis;
- * klik untuk memilih, hover panel/daftar untuk menjeda.
+ * Format dua kolom: kiri = judul + daftar tahap, kanan = panel tahap aktif.
+ * Satu kalimat per tahap (dulu: paragraf + kalimat ringkas + 3 baris hasil —
+ * isi yang sama ditulis tiga kali). Tanpa ganti otomatis: pengunjung yang
+ * memilih tahap. Di HP panel disembunyikan, kalimatnya tampil di daftar.
  *
  * Empat langkah adalah turunan dari Business Discovery, Competitive Teardown,
  * Conversion Architecture, dan Continuous Improvement — ditulis tanpa satu pun
@@ -18,46 +19,33 @@ const steps = [
   {
     number: "01",
     title: "Konsultasi",
-    lead: "Kami memahami bisnis dan tujuan Anda.",
-    body: "Kami menggali kebutuhan bisnis, target pelanggan, serta tujuan yang ingin dicapai melalui website.",
-    outputs: ["Kebutuhan bisnis", "Target pelanggan", "Tujuan website"],
+    line: "Kami menggali kebutuhan bisnis, target pelanggan, serta tujuan yang ingin dicapai melalui website.",
   },
   {
     number: "02",
     title: "Riset",
-    lead: "Kami menganalisis pasar dan kompetitor Anda.",
-    body: "Kami mempelajari bagaimana kompetitor memposisikan bisnisnya untuk menemukan peluang yang dapat membuat website Anda lebih relevan dan kompetitif.",
-    outputs: ["Posisi kompetitor", "Peluang pembeda", "Arah penyampaian"],
+    line: "Kami mempelajari bagaimana kompetitor memposisikan bisnisnya untuk menemukan peluang yang dapat membuat website Anda lebih relevan dan kompetitif.",
   },
   {
     number: "03",
     title: "Strategi & Konten",
-    lead: "Kami menentukan apa yang perlu disampaikan.",
-    body: "Kami menyusun struktur dan konten berdasarkan informasi yang dibutuhkan calon pelanggan untuk memahami, mempertimbangkan, dan menghubungi bisnis Anda.",
-    outputs: ["Struktur halaman", "Naskah konten", "Alur menuju kontak"],
+    line: "Kami menyusun struktur dan konten berdasarkan informasi yang dibutuhkan calon pelanggan untuk memahami, mempertimbangkan, dan menghubungi bisnis Anda.",
   },
   {
     number: "04",
     title: "Desain & Development",
-    lead: "Kami mengubah strategi menjadi website.",
-    body: "Konten dan struktur yang telah disepakati diterjemahkan ke dalam desain dan website yang responsif, cepat, dan siap digunakan.",
-    outputs: ["Desain visual", "Website responsif", "Siap digunakan"],
+    line: "Konten dan struktur yang telah disepakati diterjemahkan ke dalam desain dan website yang responsif, cepat, dan siap digunakan.",
   },
   {
     number: "05",
     title: "Launch & Optimization",
-    lead: "Kami memastikan website terus memberikan nilai.",
-    body: "Setelah website live, kami memantau performanya untuk melihat apa yang bekerja dan menentukan peluang perbaikan berikutnya.",
-    outputs: ["Website live", "Pemantauan performa", "Rencana perbaikan"],
+    line: "Setelah website live, kami memantau performanya untuk melihat apa yang bekerja dan menentukan peluang perbaikan berikutnya.",
   },
 ];
-
-const STEP_MS = 6000;
 
 export default function ProseKerja() {
   const [active, setActive] = useState(0);
 
-  const next = () => setActive((i) => (i + 1) % steps.length);
   const cur = steps[active];
 
   return (
@@ -91,18 +79,9 @@ export default function ProseKerja() {
                     {s.title}
                   </button>
 
-                  {open && (
-                    <span
-                      key={active}
-                      className="pk-progress"
-                      aria-hidden="true"
-                      onAnimationEnd={next}
-                    />
-                  )}
-
                   <div className="pk-panel-text">
                     <div>
-                      <p className="pk-item-body">{s.body}</p>
+                      <p className="pk-item-body">{s.line}</p>
                     </div>
                   </div>
                 </li>
@@ -125,20 +104,7 @@ export default function ProseKerja() {
             </div>
 
             <p className="pk-card-title">{cur.title}</p>
-            <p className="pk-card-lead">{cur.lead}</p>
-
-            <ul className="pk-outputs">
-              {cur.outputs.map((o, i) => (
-                <li key={o} style={{ animationDelay: `${150 + i * 90}ms` }}>
-                  <span className="pk-check">
-                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none">
-                      <path d="M3.5 8.3l3 3 6-6.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                  {o}
-                </li>
-              ))}
-            </ul>
+            <p className="pk-card-lead">{cur.line}</p>
 
             {/* Linimasa lima tahap — terisi sampai tahap aktif */}
             <div className="pk-timeline">
@@ -243,28 +209,12 @@ export default function ProseKerja() {
         .pk-trigger:hover .pk-item-num,
         .pk-item.is-open .pk-item-num { color: var(--color-studio-ink); }
 
-        /* Garis progres di tepi atas item yang terbuka */
-        .pk-progress {
-          position: absolute;
-          top: -1px;
-          left: -1px;
-          right: -1px;
-          height: 2px;
-          background: var(--color-studio-ink);
-          transform-origin: left;
-          animation: pk-progress ${STEP_MS}ms linear both;
-        }
+        /* Kalimat tahap di daftar hanya untuk HP — di desktop sudah ada di panel */
+        .pk-panel-text { display: none; }
 
-        .pk-grid:hover .pk-progress { animation-play-state: paused; }
-
-        @keyframes pk-progress {
-          from { transform: scaleX(0); }
-          to   { transform: scaleX(1); }
-        }
-
-        /* Isi accordion: grid-rows 0fr → 1fr agar tinggi beranimasi mulus */
-        .pk-panel-text {
-          display: grid;
+        /* Isi accordion (HP): grid-rows 0fr → 1fr agar tinggi beranimasi mulus */
+        .pk-item .pk-panel-text {
+          grid-template-rows: 0fr;
           grid-template-rows: 0fr;
           transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
         }
@@ -284,7 +234,7 @@ export default function ProseKerja() {
         /* ── Panel visual ── */
         .pk-visual {
           position: relative;
-          min-height: 560px;
+          min-height: 440px;
           border-radius: var(--radius-xl);
           overflow: hidden;
           background:
@@ -341,46 +291,11 @@ export default function ProseKerja() {
         }
 
         .pk-card-lead {
-          font-size: clamp(16px, 1.3vw, 19px);
-          line-height: 1.4;
+          font-size: clamp(18px, 1.6vw, 22px);
+          line-height: 1.45;
           letter-spacing: -0.2px;
           color: var(--color-ink-60);
           max-width: 26em;
-        }
-
-        .pk-outputs {
-          list-style: none;
-          margin-top: clamp(24px, 3vw, 40px);
-          border-top: 1px solid var(--color-ink-08);
-        }
-
-        .pk-outputs li {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding-block: 14px;
-          border-bottom: 1px solid var(--color-ink-08);
-          font-size: 16px;
-          letter-spacing: -0.2px;
-          color: var(--color-studio-ink);
-          animation: pk-row-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-
-        @keyframes pk-row-in {
-          from { opacity: 0; transform: translateX(-8px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-
-        .pk-check {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          background: var(--color-studio-ink);
-          color: var(--color-card-white);
-          flex-shrink: 0;
         }
 
         .pk-timeline {
@@ -414,19 +329,18 @@ export default function ProseKerja() {
         @media (max-width: 1023px) {
           .pk-grid { grid-template-columns: 1fr; }
           .pk-list { max-width: none; }
-          .pk-visual { min-height: 480px; }
+          .pk-visual { min-height: 400px; }
         }
 
         /* Mobile: panel visual disembunyikan — isi tahap cukup dari accordion */
         @media (max-width: 640px) {
           .pk-visual { display: none; }
           .pk-left { gap: var(--spacing-32); }
+          .pk-item .pk-panel-text { display: grid; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .pk-card, .pk-outputs li { animation: none; }
-          /* Tanpa animasi progres = tanpa ganti tahap otomatis (lihat Showcase) */
-          .pk-progress { animation: none !important; display: none; }
+          .pk-card { animation: none; }
         }
       `}</style>
     </Section>

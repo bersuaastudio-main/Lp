@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Section from "./Section";
+import CTAButton from "./CTAButton";
+import { CTA_LABEL, WA_DEFAULT } from "@/app/lib/constants";
 
 /**
  * 04 · Contoh Hasil Kerja — showcase satu panggung besar + tab thumbnail.
@@ -73,6 +75,15 @@ const demos = [
   },
 ];
 
+const SELECT_EVENT = "showcase:select";
+
+/** Dipanggil dari section lain (kartu Untuk Siapa): gulir ke Featured Project
+ *  dan aktifkan tab portofolio ke-`index`. */
+export function selectShowcase(index: number) {
+  window.dispatchEvent(new CustomEvent<number>(SELECT_EVENT, { detail: index }));
+  document.getElementById("contoh")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 /** Lama tiap slide sebelum pindah otomatis */
 const SLIDE_MS = 6000;
 
@@ -88,6 +99,13 @@ export default function Showcase() {
     if (!box || !tab || box.scrollWidth <= box.clientWidth) return;
     box.scrollTo({ left: tab.offsetLeft - 12, behavior: "smooth" });
   }, [active]);
+
+  /* Pilihan tab dari kartu Untuk Siapa */
+  useEffect(() => {
+    const onSelect = (e: Event) => setActive((e as CustomEvent<number>).detail);
+    window.addEventListener(SELECT_EVENT, onSelect);
+    return () => window.removeEventListener(SELECT_EVENT, onSelect);
+  }, []);
 
   /* Autoplay dimatikan untuk pengguna yang meminta gerak minimal */
   const next = () => setActive((i) => (i + 1) % demos.length);
@@ -165,6 +183,13 @@ export default function Showcase() {
         </div>
       </div>
 
+      {/* Zona "sudah yakin" — satu pintu ke WhatsApp setelah bukti terkuat */}
+      <div className="sc-cta">
+        <CTAButton location="showcase" message={WA_DEFAULT} inverted>
+          {CTA_LABEL}
+        </CTAButton>
+      </div>
+
       <style>{`
         /* Tinggi panggung = lebar × rasio gambar aktif (padding-top di inline
            style). padding beranimasi, jadi pergantian rasio terasa mulus. */
@@ -196,6 +221,16 @@ export default function Showcase() {
         }
 
         .sc-slide.is-active .sc-img { transform: scale(1); }
+
+        .sc-cta {
+          display: flex;
+          justify-content: center;
+          margin-top: clamp(40px, 5vw, 64px);
+        }
+
+        @media (max-width: 480px) {
+          .sc-cta a { width: 100%; }
+        }
 
         /* ── Bar bawah: keterangan kiri · tab kanan ── */
         .sc-meta {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { trackWAClick } from "@/app/lib/tracking";
+import { openLeadForm } from "./LeadForm";
 import { WA_NUMBER, WA_DEFAULT } from "@/app/lib/constants";
 
 /* Link nav — tiga titik keputusan: lihat contoh, lihat harga, baca FAQ.
@@ -112,11 +112,14 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             className="nav-cta"
-            onClick={() => trackWAClick("navbar")}
-            aria-label="Hubungi kami via WhatsApp"
+            onClick={(e) => {
+              e.preventDefault();
+              openLeadForm({ location: "navbar" });
+            }}
+            aria-haspopup="dialog"
           >
-            <span className="nav-cta-long">Hubungi Kami</span>
-            <span className="nav-cta-short">Hubungi</span>
+            <span className="nav-cta-long">Konsultasi Gratis</span>
+            <span className="nav-cta-short">Konsultasi</span>
           </a>
         </div>
       </div>

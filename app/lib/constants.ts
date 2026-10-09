@@ -15,7 +15,33 @@ export const CTA_LABEL = "Konsultasi Gratis";
  * Catatan format: WhatsApp menebalkan teks dengan SATU tanda bintang (*teks*).
  */
 export const WA_DEFAULT =
-  "Halo, saya tertarik melihat bagaimana bisnis saya dapat ditampilkan melalui *Website Preview Gratis*.\n\nNama bisnis: *[ ]*\nBidang usaha: *[ ]*";
+  "Halo Bersua, saya ingin *konsultasi gratis* untuk website bisnis saya.\n\nNama bisnis: *[ ]*\nBidang usaha: *[ ]*";
+
+/** Pesan dari kartu harga — menyebut paket yang dipilih agar percakapan langsung terarah. */
+export const waPackage = (paket: string) =>
+  `Halo Bersua, saya ingin *konsultasi gratis* tentang paket *${paket}*.\n\nNama bisnis: *[ ]*\nBidang usaha: *[ ]*`;
+
+/** Pilihan paket di form leads (LeadForm). `name` harus sama dengan judul kartu harga;
+ *  `anchor` = harga normal (dicoret) — samakan dengan `anchorPrice` di Harga.tsx. */
+export const PACKAGE_OPTIONS: { name: string; price: string; anchor?: string }[] = [
+  { name: "Starter", price: "Rp1,1 jt", anchor: "Rp1,6 jt" },
+  { name: "Business Website", price: "Rp2,5 jt", anchor: "Rp3,75 jt" },
+  { name: "Custom", price: "Sesuai scope" },
+  { name: "Belum yakin", price: "Bantu pilihkan" },
+];
+
+/** Label & pesan untuk paket berharga tetap — pengunjung sudah memilih, bukan bertanya. */
+export const CTA_CHOOSE = "Pilih Paket";
+export const waChoosePackage = (paket: string) =>
+  `Halo Bersua, saya ingin *memilih paket ${paket}*.\n\nNama bisnis: *[ ]*\nBidang usaha: *[ ]*`;
+
+/**
+ * Promo harga coret (REQ-C6.13 — wajib menyebut alasan & tanggal berakhir).
+ * Setelah tanggal lewat: perbarui nama & tanggal, atau kosongkan `anchorPrice`
+ * di Harga.tsx agar harga coret hilang.
+ */
+export const PROMO_NAME = "Oktober Growth";
+export const PROMO_UNTIL = "27 Oktober 2026";
 
 /**
  * Tiga jalur CTA berdasarkan niat pengunjung — masing-masing membuka WhatsApp

@@ -1,7 +1,7 @@
 import Section from "./Section";
 import CTAButton from "./CTAButton";
 
-import { WA_DEFAULT } from "@/app/lib/constants";
+import { CTA_LABEL, CTA_CHOOSE, WA_DEFAULT, PROMO_NAME, PROMO_UNTIL, waPackage, waChoosePackage } from "@/app/lib/constants";
 
 /* Hover card memakai CSS transition (lihat .sol-card di <style> bawah), bukan
  * library animasi — satu efek tidak sepadan dengan ~124KB JS di bundle.
@@ -61,28 +61,26 @@ const SOLUTIONS: Solution[] = [
       {
         label: "Website",
         items: [
-          "One-page custom website",
-          "Up to 7 sections",
-          "Responsive design",
+          "Satu halaman, hingga 7 bagian",
+          "Rapi di HP dan desktop",
         ],
       },
       {
-        label: "Essential",
+        label: "Mudah dihubungi",
         items: [
-          "WhatsApp CTA",
-          "Contact form",
-          "Basic SEO",
-          "Social media integration",
+          "Tombol WhatsApp & formulir kontak",
+          "Terhubung ke media sosial",
+          "Dasar agar mudah ditemukan di Google",
         ],
       },
       {
-        label: "Service",
-        items: ["1x revision", "Domain + hosting 1 tahun*"],
+        label: "Termasuk",
+        items: ["1x revisi", "Domain + hosting 1 tahun"],
       },
     ],
-    timeline: "Pengerjaan 2-3 hari",
-    cta: "Pelajari Selengkapnya",
-    waMessage: WA_DEFAULT,
+    timeline: "Pengerjaan 2–3 hari",
+    cta: CTA_CHOOSE,
+    waMessage: waChoosePackage("Starter"),
     primary: false,
   },
   {
@@ -98,34 +96,32 @@ const SOLUTIONS: Solution[] = [
       {
         label: "Website",
         items: [
-          "3–5 custom pages",
-          "Responsive design",
-          "Professional navigation",
-          "WhatsApp & inquiry system",
+          "3–5 halaman, navigasi jelas",
+          "Rapi di HP dan desktop",
+          "Tombol WhatsApp & formulir inquiry",
         ],
       },
       {
-        label: "Growth",
+        label: "Ditemukan & terukur",
         items: [
-          "SEO foundation",
-          "Google Analytics",
-          "Search Console",
-          "Social media integration",
+          "Fondasi agar mudah ditemukan di Google",
+          "Data pengunjung (Google Analytics)",
+          "Terhubung ke media sosial",
         ],
       },
       {
-        label: "Service",
+        label: "Termasuk",
         items: [
-          "2x revision",
-          "Domain + hosting 1 tahun*",
-          "Deployment",
-          "Post-launch support",
+          "2x revisi",
+          "Domain + hosting 1 tahun",
+          "Dipasang sampai online",
+          "Dukungan setelah launch",
         ],
       },
     ],
-    timeline: "Pengerjaan 4-5 hari",
-    cta: "Mulai Project Anda",
-    waMessage: WA_DEFAULT,
+    timeline: "Pengerjaan 4–5 hari",
+    cta: CTA_CHOOSE,
+    waMessage: waChoosePackage("Business Website"),
     primary: true,
   },
   {
@@ -139,18 +135,17 @@ const SOLUTIONS: Solution[] = [
     launchPrice: "Hubungi Kami",
     featuresLabel: "Contoh kebutuhan:",
     features: [
-      "E-Commerce",
-      "Payment Gateway",
-      "Booking",
-      "Dashboard",
-      "CRM Integration",
-      "Business Automation",
-      "Custom Web Application",
+      "Toko online",
+      "Pembayaran online",
+      "Sistem booking",
+      "Dashboard internal",
+      "Integrasi CRM",
+      "Otomatisasi proses bisnis",
     ],
     bottomNote:
-      "Pengerjaan dan harga akhir berdasarkan scope & kompleksitas proyek.",
-    cta: "Konsultasikan Kebutuhan",
-    waMessage: WA_DEFAULT,
+      "Waktu dan harga akhir mengikuti cakupan proyek.",
+    cta: CTA_LABEL,
+    waMessage: waPackage("Custom Digital Solution"),
     primary: false,
   },
 ];
@@ -222,6 +217,7 @@ function SolutionCard({ sol }: { sol: Solution }) {
 
       <CTAButton
         location={`pricing_${sol.id}`}
+        paket={sol.id === "custom" ? "Custom" : sol.title}
         message={sol.waMessage}
         fullWidth
         inverted={sol.primary}
@@ -239,6 +235,15 @@ export default function Harga() {
       track="harga"
       heading="Pilih solusi yang sesuai kebutuhan bisnis Anda."
       surface="ink"
+      kicker={
+        <figure className="harga-quote">
+          <blockquote>
+            &ldquo;Di era ketika website semakin mudah dibuat, apakah website Anda
+            benar-benar tepat untuk bisnis Anda?&rdquo;
+          </blockquote>
+          <figcaption>Rafif, Founder Bersua</figcaption>
+        </figure>
+      }
     >
       {/* 3 solution cards — horizontal row */}
       <div className="sol-grid">
@@ -246,6 +251,12 @@ export default function Harga() {
           <SolutionCard key={s.id} sol={s} />
         ))}
       </div>
+
+      {/* REQ-C6.13 — harga coret wajib menyebut alasannya */}
+      <p className="harga-promo">
+        Harga coret adalah harga normal. Harga promo {PROMO_NAME} berlaku hingga{" "}
+        {PROMO_UNTIL}.
+      </p>
 
       {/* Secondary consultation CTA */}
       <div className="harga-consult">
@@ -263,7 +274,7 @@ export default function Harga() {
           location="pricing_consult"
           message={WA_DEFAULT}
         >
-          Konsultasi Gratis via WhatsApp
+          {CTA_LABEL}
         </CTAButton>
       </div>
 
@@ -625,6 +636,43 @@ export default function Harga() {
           font-weight: 400;
           letter-spacing: var(--tracking-heading);
           white-space: nowrap;
+        }
+
+        /* ── Kutipan founder sebagai pembuka section ── */
+        .harga-quote {
+          margin: 0 auto var(--spacing-32);
+          max-width: 760px;
+        }
+
+        .harga-quote blockquote {
+          margin: 0;
+          font-size: clamp(22px, 2.4vw, 32px);
+          line-height: 1.3;
+          letter-spacing: -0.02em;
+          color: var(--color-card-white);
+          text-wrap: balance;
+        }
+
+        .harga-quote figcaption {
+          margin-top: 12px;
+          font-size: 14px;
+          color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Judul harga turun satu tingkat — kutipan yang memimpin */
+        #harga .sec-heading {
+          font-size: clamp(20px, 1.8vw, 26px);
+          line-height: 1.3;
+          letter-spacing: -0.4px;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        .harga-promo {
+          font-size: 13px;
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.55);
+          text-align: center;
+          margin-top: var(--spacing-8);
         }
 
         /* ── Consultation CTA ── */

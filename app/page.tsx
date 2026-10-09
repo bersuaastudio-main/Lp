@@ -5,15 +5,14 @@ import { initScrollDepthTracking, initSectionViewTracking } from "@/app/lib/trac
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import KategoriBisnis from "./components/KategoriBisnis";
 import Showcase from "./components/Showcase";
 import UntukSiapa from "./components/UntukSiapa";
 import Harga from "./components/Harga";
 import ProseKerja from "./components/ProseKerja";
-import Tentang from "./components/Tentang";
 import FAQ from "./components/FAQ";
 import CTAPenutup from "./components/CTAPenutup";
 import Footer from "./components/Footer";
+import LeadForm from "./components/LeadForm";
 
 export default function Home() {
   useEffect(() => {
@@ -32,19 +31,14 @@ export default function Home() {
         {/* 01 — Hero */}
         <Hero />
 
-        {/* 02 — Kategori bisnis: empat jenis, empat isi halaman */}
-        <KategoriBisnis />
-
-        {/* 03 — Untuk siapa: tiga keadaan pemicu, anchor tujuan DM */}
+        {/* 02 — Untuk siapa: empat jenis bisnis (gabungan Kategori),
+            klik kartu → tab portofolio yang relevan di Featured Project */}
         <UntukSiapa />
 
         {/* 04 — Contoh hasil kerja: panggung showcase + tab thumbnail */}
         <Showcase />
 
-        {/* Founder quote — latar ink, jembatan showcase → harga */}
-        <Tentang />
-
-        {/* 05 — Harga: solution-based pricing */}
+        {/* 05 — Harga: dibuka kutipan founder, satu label CTA */}
         <Harga />
 
         {/* 07 — Cara kerja: empat langkah + dua batasan */}
@@ -57,6 +51,8 @@ export default function Home() {
         <CTAPenutup />
       </main>
       <Footer />
+      {/* Form leads — dibuka oleh semua CTA sebelum ke WhatsApp */}
+      <LeadForm />
     </>
   );
 }

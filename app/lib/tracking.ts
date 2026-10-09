@@ -36,6 +36,12 @@ export const trackWAClick = (location: string) => {
   trackMeta("Contact", { content_name: location });
 };
 
+/* Form leads dibuka — langkah sebelum konversi; dipisah dari wa_click agar
+   tingkat penyelesaian form bisa diukur (open → wa_click). */
+export const trackLeadFormOpen = (location: string) => {
+  track("lead_form_open", { click_location: location });
+};
+
 /* ─── Scroll Depth ───────────────────────────────────────────────────────── */
 export function initScrollDepthTracking() {
   if (typeof window === "undefined") return;

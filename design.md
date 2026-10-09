@@ -86,27 +86,30 @@ Aturan:
 
 ## 5. Struktur Halaman & Elemen
 
-Urutan (`app/page.tsx`):
+Urutan (`app/page.tsx`) — disusun ulang Oktober 2026 untuk memangkas beban kognitif:
+satu pertanyaan per section, bukti sebelum harga, satu jenis aksi.
 
-| # | Section | Latar | Komponen |
-|---|---|---|---|
-| — | Navbar | putih | `Navbar.tsx` |
-| 01 | Hero | cream | `Hero.tsx` |
-| 02 | Kategori bisnis | cream | `KategoriBisnis.tsx` |
-| 03 | Untuk siapa | foto → ink | `UntukSiapa.tsx` |
-| 04 | Featured Project | ink | `Showcase.tsx` |
-| 05 | Founder quote | ink | `Tentang.tsx` |
-| 06 | Harga | ink | `Harga.tsx` |
-| 07 | Cara kerja | cream | `ProseKerja.tsx` |
-| 08 | FAQ | cream | `FAQ.tsx` |
-| 09 | CTA penutup | foto tekstur | `CTAPenutup.tsx` |
-| — | Footer | ink | `Footer.tsx` |
+| # | Section | Latar | Komponen | Pertanyaan yang dijawab |
+|---|---|---|---|---|
+| — | Navbar | putih | `Navbar.tsx` | — |
+| 01 | Hero | cream | `Hero.tsx` | Ini apa? |
+| 02 | Untuk siapa | foto → ink | `UntukSiapa.tsx` | Untuk bisnis saya? |
+| 03 | Featured Project | ink | `Showcase.tsx` | Hasilnya seperti apa? |
+| 04 | Harga | ink | `Harga.tsx` | Berapa? |
+| 05 | Cara kerja | cream | `ProseKerja.tsx` | Prosesnya bagaimana? |
+| 06 | FAQ | cream | `FAQ.tsx` | Keraguan tersisa |
+| 07 | CTA penutup | foto tekstur | `CTAPenutup.tsx` | Mulai |
+| — | Footer | ink | `Footer.tsx` | — |
+| — | Form leads | modal | `LeadForm.tsx` | Dibuka oleh semua CTA |
+
+Tidak dipakai lagi (file disimpan): `KategoriBisnis.tsx` (digabung ke Untuk siapa),
+`Tentang.tsx` (kutipan pindah ke pembuka Harga), `Demo.tsx`, `Layanan.tsx`.
 
 ### Navbar
 Logo mark gelombang + titik (34px, `logo-nav.png`) + wordmark dua baris
 "Bersua Lab / Studio" (17px, 400, leading 1.1). Link tengah: Portofolio · Harga · FAQ
-(scroll-spy, garis bawah saat aktif). CTA kanan "Hubungi Kami". Mobile: satu baris,
-wordmark disembunyikan, CTA jadi "Hubungi".
+(scroll-spy, garis bawah saat aktif). CTA kanan "Konsultasi Gratis" (mobile:
+"Konsultasi") → membuka form leads.
 
 ### Hero
 Eyebrow kurung → headline besar regular dengan **reveal per kata** (mask naik,
@@ -114,50 +117,57 @@ jeda 70ms/kata) → tombol CTA. Tanpa paragraf pendukung.
 Tombol hero: label **bergulir** saat hover + panah dalam lingkaran putih berputar
 dari ↗ ke →, lapisan abu menyapu dari bawah, terangkat 2px.
 
-### Kategori bisnis
-Grid 2 kolom kartu portofolio editorial: gambar 4:5 bersudut tegas tanpa overlay,
-lalu satu baris keterangan — nama kiri (ink, 16–18px) · jenis bisnis kanan (abu 32%,
-rata kanan). Hover: gambar zoom 1.03, keterangan kanan menggelap.
-
 ### Untuk siapa
-Foto full-bleed (`untuk-siapa-bg-2.webp`, 16:9) · judul gelap terpusat di area langit ·
-empat **kartu kaca melayang** (blur 18px, `rgba(24,26,20,.38)`, tepi putih 18%), dua
-di kiri & dua di kanan menjauhi layar di foto, bergerak naik-turun pelan.
-Dasar foto memudar 32% ke `#1a1a1a` supaya menyatu dengan Featured Project.
+Foto full-bleed (`untuk-siapa-bg-2.webp`, 16:9) · judul gelap terpusat di area langit
+("Untuk bisnis seperti apa Bersua bekerja?") · empat **kartu kaca melayang** (blur 18px,
+`rgba(24,26,20,.38)`, tepi putih 18%) berisi **jenis bisnis**: ikon garis + nama + satu
+kalimat konkret + "Lihat contoh →". Dua di kiri, dua di kanan menjauhi layar di foto.
+Klik kartu **tidak** membuka WhatsApp: halaman bergulir ke Featured Project dan tab
+yang relevan aktif (`selectShowcase(index)`): Supplier → Hayati · Jasa → Aruna ·
+Brand → Gatra · Hospitality → Sakhia. Dasar foto memudar 32% ke `#1a1a1a`.
 Tablet/mobile: foto jadi banner (3:2 / 4:5), kartu tersusun di bawahnya.
 
 ### Featured Project
-Panggung 16:9 (4:3 tablet, 4:5 mobile) berlatar gelap, dibagi tiga pita:
-atas = dua chip kaca sejajar (nama bisnis + keputusan desain) · tengah = tangkapan
-layar website utuh (`contain`) dengan bayangan · bawah = enam tab thumbnail dengan
-garis progres. Salinan blur gambar mengisi latar. Ganti otomatis tiap 6 detik, jeda
-saat hover, bisa diklik; di HP baris tab digeser dan tab aktif ikut digulir ke layar.
+Panggung berlatar gelap yang **tingginya mengikuti rasio gambar aktif** (padding-top %,
+dianimasikan 0.7s) — tangkapan layar memenuhi panggung tanpa crop. Di bawah panggung:
+nama + keputusan desain (kiri) · enam tab thumbnail dengan garis progres (kanan).
+Ganti otomatis tiap 6 detik, jeda saat hover. Di HP baris tab digeser horizontal dan
+tab aktif ikut digulir. Satu CTA "Konsultasi Gratis" di bawahnya (zona "sudah yakin").
 Proyek: Gatra (batik) · Hayati House (greenhouse) · Aruna Energi (panel surya) ·
 Sakhia (gorden) · Niken Ecoprint (fashion) · Freshville (sayuran B2B).
 
-### Founder quote
-Satu kolom tanpa foto: tanda kutip besar redup → kutipan putih → nama & peran.
-
 ### Harga
+Dibuka **kutipan founder** (slot `kicker` di `Section`), lalu judul kecil "Pilih solusi…".
 Tiga kartu: Starter · **Business Website** (putih, "Recommended") · Custom.
-Gradient **Aurora**: kartu gelap = kilau biru & mint pastel sangat tipis di atas
-`#262829`; kartu utama = putih dengan rona biru kanan-atas & mint kiri-bawah.
-Kartu gelap diberi garis tepi dalam 1px putih 7%. Hover: naik 5px, skala 1.03.
-Di bawah kartu: blok konsultasi dua baris + tombol WhatsApp.
+Fitur ditulis dalam bahasa manfaat, dikelompokkan "Website / Mudah dihubungi /
+Ditemukan & terukur / Termasuk". Gradient **Aurora**: kartu gelap = kilau biru & mint
+pastel tipis di atas `#262829`; kartu utama = putih dengan rona biru & mint.
+Hover: naik 5px, skala 1.03. CTA: "Pilih Paket" (Starter, Business) · "Konsultasi
+Gratis" (Custom, harga "Hubungi Kami"). Di bawah kartu: catatan promo
+("Harga coret adalah harga normal. Harga promo {PROMO_NAME} berlaku hingga
+{PROMO_UNTIL}.") lalu blok "Punya kebutuhan yang spesifik?" + CTA.
 
 ### Cara kerja
-Dua kolom ala dashboard: kiri = eyebrow mono "CARA KERJA", judul, sub, lalu daftar
-lima tahap (accordion, satu terbuka berbingkai + garis progres). Kanan = panel gradien
-cokelat hangat berisi kartu putih: "Tahap 0X", nama tahap besar, satu kalimat,
-tiga hasil bercentang, linimasa lima segmen. Ganti otomatis tiap 6 detik.
-Mobile: panel disembunyikan.
+Dua kolom: kiri = eyebrow mono "CARA KERJA", judul, sub, daftar lima tahap (yang aktif
+berbingkai). Kanan = panel gradien cokelat hangat berisi kartu putih: "Tahap 0X", nama
+tahap besar, satu kalimat, linimasa lima segmen. **Tanpa ganti otomatis** — pengunjung
+memilih tahap. Mobile: panel disembunyikan, kalimat tampil di bawah tahap terbuka.
 
 ### FAQ
 Accordion `<details>` CSS-only, pertanyaan 20px, jawaban abu, garis antar-item.
 
 ### CTA penutup
 Latar foto tekstur abu horizontal (`cta-bg-landscape.jpg`) dengan lapisan gelap
-35–55%, judul putih terpusat, satu tombol putih.
+35–55%, judul putih terpusat, satu tombol putih "Diskusikan Bisnis Anda".
+
+### Form leads (`LeadForm.tsx`)
+`<dialog>` modal (cream, radius 16px, backdrop blur) yang dibuka **semua** CTA lewat
+`openLeadForm({ location, paket })` — menyaring leads sebelum WhatsApp.
+Kolom: Nama Anda* · Nama bisnis* · Jenis bisnis* · Tertarik paket? (Starter /
+Business Website dengan harga coret, Custom, Belum yakin) · Pesan (opsional).
+Tombol "Lanjut ke WhatsApp" menyusun pesan berisi semua isian; kalimat pembuka
+mengikuti tombol asal (konsultasi gratis / memilih paket X / mendiskusikan bisnis).
+Paket otomatis terpilih bila dibuka dari "Pilih Paket". Tutup: ×, Esc, klik backdrop.
 
 ### Footer
 Latar ink. Tiga kolom: logo putih (`logo-bersua-light.png`) · "Konsultasi & pertanyaan"
@@ -172,16 +182,18 @@ ikon sosial kotak putih (Instagram, LinkedIn, TikTok, Behance).
 |---|---|---|
 | Headline hero | Kata naik dari mask, berurutan | 1s, jeda 70ms |
 | Tombol hero | Label bergulir, panah berputar, isi menyapu | 0.5s |
-| Kartu kategori | Zoom gambar | 0.8s |
 | Kartu kaca | Melayang ±8px | 7s loop |
-| Showcase / Cara kerja | Crossfade + garis progres, auto 6s, jeda saat hover | 0.6–0.9s |
+| Featured Project | Crossfade + tinggi panggung + garis progres, auto 6s | 0.7–0.9s |
+| Cara kerja | Kartu panel muncul saat tahap dipilih (tanpa auto) | 0.6s |
 | Kartu harga | Naik + skala | 0.35s |
+| Form leads | Muncul naik 16px | 0.4s |
 
-Easing standar: `cubic-bezier(0.22, 1, 0.36, 1)`. Semua animasi dimatikan oleh
-`prefers-reduced-motion` (aturan global di `globals.css` + per komponen).
+Hanya **satu** elemen yang berganti otomatis (Featured Project). Easing standar:
+`cubic-bezier(0.22, 1, 0.36, 1)`. Semua animasi dimatikan oleh `prefers-reduced-motion`.
 
-Variasi tombol yang tersedia untuk dipilih ada di `/cta-lab` (internal, noindex):
-A Rolling Label · B Fill Sweep · C Editorial Link · D Circle · E Split Arrow · F Magnetic.
+Variasi tombol yang tersedia untuk dipilih ada di `/cta-lab` (internal, noindex, tidak
+di-deploy): A Rolling Label · B Fill Sweep · C Editorial Link · D Circle · E Split Arrow ·
+F Magnetic.
 
 ---
 
@@ -189,15 +201,25 @@ A Rolling Label · B Fill Sweep · C Editorial Link · D Circle · E Split Arrow
 
 ### Suara
 Tenang, yakin, tanpa hype. Bahasa Indonesia baku-santai, menyapa **"Anda"**, Bersua
-menyebut diri **"kami"**. Kalimat pendek, satu gagasan per kalimat. Istilah teknis
-Inggris boleh untuk nama fitur/paket (Responsive design, SEO foundation).
+menyebut diri **"kami"**. Kalimat pendek, satu gagasan per kalimat. Fitur paket
+ditulis sebagai manfaat dalam bahasa Indonesia ("Rapi di HP dan desktop", bukan
+"Responsive design"). Hindari mengulang "sesuai kebutuhan bisnis Anda".
 
 ### Dilarang
 - Angka hasil, testimoni, klaim peningkatan penjualan/konversi.
 - "Berpengalaman", "spesialis", "sudah menangani".
 - Kata "Portofolio", "Case Study", "Klien Kami" sebagai **judul section**
   (boleh sebagai label navigasi).
-- Lebih dari satu label CTA utama — semua tombol utama: **"Konsultasi Gratis"**.
+- Harga coret tanpa alasan & tanggal berakhir (REQ-C6.13).
+- Label tombol yang menjanjikan halaman lain padahal membuka WhatsApp
+  (mis. "Pelajari Selengkapnya").
+
+### Label CTA (hanya tiga)
+| Label | Dipakai di |
+|---|---|
+| Konsultasi Gratis | Navbar, hero, Featured Project, kartu Custom, blok konsultasi |
+| Pilih Paket | Kartu Starter & Business Website |
+| Diskusikan Bisnis Anda | CTA penutup |
 
 ### Naskah aktif
 
@@ -205,27 +227,33 @@ Inggris boleh untuk nama fitur/paket (Responsive design, SEO foundation).
 |---|---|
 | Hero eyebrow | (Studio website profil bisnis) |
 | Hero headline | Partner membangun website yang tepat untuk membantu bisnis Anda berkembang. |
-| CTA utama | Konsultasi Gratis |
-| CTA navbar | Hubungi Kami |
-| Untuk siapa | Dibangun untuk bisnis yang ingin bergerak lebih jauh. |
-| — kartu | Menjangkau pasar global · Membangun kredibilitas sejak awal · Naik kelas · Membuka peluang baru |
-| Featured Project — sub | Bersua membantu bisnis membangun website dari konsep, desain, hingga siap digunakan sesuai dengan karakter dan kebutuhan bisnis Anda. |
-| Founder | "Di era ketika website semakin mudah dibuat, apakah website Anda benar-benar tepat untuk bisnis Anda?" — Rafif, Founder, Bersua |
-| Harga | Pilih solusi yang sesuai kebutuhan bisnis Anda. |
+| Untuk siapa | Untuk bisnis seperti apa Bersua bekerja? |
+| — kartu | Supplier dan distributor · Jasa profesional · Brand dan produk · Hospitality dan properti |
+| Featured Project | Featured Project — Bersua membantu bisnis membangun website dari konsep, desain, hingga siap digunakan sesuai dengan karakter dan kebutuhan bisnis Anda. |
+| Harga — pembuka | "Di era ketika website semakin mudah dibuat, apakah website Anda benar-benar tepat untuk bisnis Anda?" — Rafif, Founder Bersua |
+| Harga — judul | Pilih solusi yang sesuai kebutuhan bisnis Anda. |
 | — Custom | Harga: **Hubungi Kami** |
+| — promo | Harga promo **Oktober Growth** berlaku hingga **27 Oktober 2026** |
 | — blok konsultasi | Punya kebutuhan yang spesifik? / Belum yakin website seperti apa yang tepat untuk bisnis Anda? |
 | Cara kerja | Proses terstruktur untuk website yang tepat bagi bisnis Anda. |
 | — tahap | Konsultasi · Riset · Strategi & Konten · Desain & Development · Launch & Optimization |
 | FAQ | Yang biasanya ditanyakan. |
 | CTA penutup | Saatnya membawa bisnis Anda bersaing di level global. |
+| Form leads | Siap mulai project? — Isi form singkat ini, kami balas langsung via WhatsApp. |
 
 ### Pola chip keputusan (Featured Project)
 `[Apa yang ditaruh di depan] — [alasan dari sudut pandang pembeli].`
 Contoh: "Proses membatik jadi hero — harga premium perlu cerita pembuatannya."
 
 ### Pesan WhatsApp
-Semua CTA memakai `WA_DEFAULT` di `app/lib/constants.ts` (format bintang tunggal untuk
-tebal di WhatsApp). Nomor, domain, dan label CTA hanya diubah di file itu.
+Isi chat harus sama dengan tombol yang diklik. Semua CTA lewat form leads; pesan disusun
+di `LeadForm.tsx`. Nilai terpusat di `app/lib/constants.ts`: `WA_NUMBER`, `CTA_LABEL`,
+`CTA_CHOOSE`, `WA_DEFAULT` (cadangan tanpa JS), `PACKAGE_OPTIONS` (harga di form —
+samakan dengan `Harga.tsx`), `PROMO_NAME`, `PROMO_UNTIL`.
+
+### Tracking
+`lead_form_open` saat form dibuka · `wa_click` (konversi, Meta "Contact") saat form
+dikirim ke WhatsApp. Rasio keduanya = tingkat penyelesaian form.
 
 ---
 
@@ -238,7 +266,6 @@ tebal di WhatsApp). Nomor, domain, dan label CTA hanya diubah di file itu.
 | `favicon.ico`, `favicon-32x32.png`, `apple-touch-icon.png` | Tab & home screen | Mark putih di kotak hitam |
 | `img/untuk-siapa-bg-2.webp` | Untuk siapa | 1672×941, 95KB |
 | `img/cta-bg-landscape.jpg` | CTA penutup | 1308×736 |
-| `img/*.webp` (supplier, Services, bbrand, Hospitality) | Kategori | Disajikan `unoptimized` |
 | `img/porto-web/*.webp` | Featured Project | Tangkapan layar hero 1600px, sumber PNG di `img/Porto/` |
 
 Sumber logo asli: `C:\Bersua\Logo\Logo Abstrak Gelombang dengan Titik.png` (PNG
