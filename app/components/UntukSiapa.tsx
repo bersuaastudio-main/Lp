@@ -59,7 +59,7 @@ const jenis = [
     icon: "jasa",
     lead: "Jasa profesional",
     body: "Klien membeli keahlian dan cara kerja — keduanya perlu terlihat sebelum percakapan dimulai.",
-    tab: 2, // Aruna Energi
+    tab: 7, // Psikora
   },
   {
     id: "brand-produk",
@@ -73,7 +73,7 @@ const jenis = [
     icon: "hospitality",
     lead: "Hospitality dan properti",
     body: "Tamu memesan suasana — foto dan lokasi harus meyakinkan sejak layar pertama.",
-    tab: 3, // Sakhia
+    tab: 6, // Pesiarkan
   },
 ];
 

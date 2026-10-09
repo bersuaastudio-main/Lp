@@ -123,8 +123,8 @@ Foto full-bleed (`untuk-siapa-bg-2.webp`, 16:9) · judul gelap terpusat di area 
 `rgba(24,26,20,.38)`, tepi putih 18%) berisi **jenis bisnis**: ikon garis + nama + satu
 kalimat konkret + "Lihat contoh →". Dua di kiri, dua di kanan menjauhi layar di foto.
 Klik kartu **tidak** membuka WhatsApp: halaman bergulir ke Featured Project dan tab
-yang relevan aktif (`selectShowcase(index)`): Supplier → Hayati · Jasa → Aruna ·
-Brand → Gatra · Hospitality → Sakhia. Dasar foto memudar 32% ke `#1a1a1a`.
+yang relevan aktif (`selectShowcase(index)`): Supplier → Hayati ·
+Brand → Gatra · Hospitality → Pesiarkan · Jasa → Psikora. Dasar foto memudar 32% ke `#1a1a1a`.
 Tablet/mobile: foto jadi banner (3:2 / 4:5), kartu tersusun di bawahnya.
 
 ### Featured Project
@@ -134,7 +134,8 @@ nama + keputusan desain (kiri) · enam tab thumbnail dengan garis progres (kanan
 Ganti otomatis tiap 6 detik, jeda saat hover. Di HP baris tab digeser horizontal dan
 tab aktif ikut digulir. Satu CTA "Konsultasi Gratis" di bawahnya (zona "sudah yakin").
 Proyek: Gatra (batik) · Hayati House (greenhouse) · Aruna Energi (panel surya) ·
-Sakhia (gorden) · Niken Ecoprint (fashion) · Freshville (sayuran B2B).
+Sakhia (gorden) · Niken Ecoprint (fashion) · Freshville (sayuran B2B) ·
+Pesiarkan (travel) · Psikora (konseling psikologi).
 
 ### Harga
 Dibuka **kutipan founder** (slot `kicker` di `Section`), lalu judul kecil "Pilih solusi…".

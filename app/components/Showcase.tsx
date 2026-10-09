@@ -73,6 +73,24 @@ const demos = [
     chip: "Freshville · Sayuran premium B2B",
     decision: "Segmen pembeli disebut jelas — restoran dan hotel langsung tahu ini untuk mereka.",
   },
+  {
+    tab: "Travel",
+    img: "/img/porto-web/pesiarkan.webp",
+    w: 1600,
+    h: 900,
+    alt: "Website Pesiarkan — travel agency Yogyakarta",
+    chip: "Pesiarkan · Travel agency, Yogyakarta",
+    decision: "Fajar di Borobudur jadi layar pertama — wisatawan memesan pengalaman, bukan rute.",
+  },
+  {
+    tab: "Jasa",
+    img: "/img/porto-web/psikora-v2.webp",
+    w: 1600,
+    h: 900,
+    alt: "Website Psikora — layanan konseling psikologi",
+    chip: "Psikora · Konseling psikologi",
+    decision: "Wajah yang tenang di depan — calon klien perlu merasa aman sebelum bercerita.",
+  },
 ];
 
 const SELECT_EVENT = "showcase:select";
@@ -89,20 +107,37 @@ const SLIDE_MS = 6000;
 
 export default function Showcase() {
   const [active, setActive] = useState(0);
+  /* Begitu pengunjung memakai tab (klik/sentuh/geser), ganti otomatis berhenti —
+     di HP tidak ada hover, jadi tanpa ini baris tab terus ditarik maju. */
+  const [paused, setPaused] = useState(false);
   const tabsRef = useRef<HTMLDivElement>(null);
 
-  /* Di HP baris tab bisa digeser — pastikan tab aktif selalu terlihat.
-     Hanya menggeser kontainer tab (scrollLeft), bukan halaman. */
+  /* Di HP baris tab bisa digeser. Gulir HANYA bila tab aktif tertutup, dan cukup
+     sampai terlihat — tidak memaksa ke tepi kiri (yang dulu membuat tab
+     sebelumnya hilang dari layar). Posisi dihitung dari getBoundingClientRect,
+     karena offsetLeft relatif ke ancestor lain, bukan ke baris tab.
+     Gulir langsung (tanpa behavior "smooth"): smooth + scroll-snap tidak
+     bergerak sama sekali di sebagian browser HP. */
   useEffect(() => {
     const box = tabsRef.current;
     const tab = box?.children[active] as HTMLElement | undefined;
     if (!box || !tab || box.scrollWidth <= box.clientWidth) return;
-    box.scrollTo({ left: tab.offsetLeft - 12, behavior: "smooth" });
+    const b = box.getBoundingClientRect();
+    const t = tab.getBoundingClientRect();
+    const pad = 12;
+    if (t.left < b.left) {
+      box.scrollBy({ left: t.left - b.left - pad });
+    } else if (t.right > b.right) {
+      box.scrollBy({ left: t.right - b.right + pad });
+    }
   }, [active]);
 
   /* Pilihan tab dari kartu Untuk Siapa */
   useEffect(() => {
-    const onSelect = (e: Event) => setActive((e as CustomEvent<number>).detail);
+    const onSelect = (e: Event) => {
+      setActive((e as CustomEvent<number>).detail);
+      setPaused(true);
+    };
     window.addEventListener(SELECT_EVENT, onSelect);
     return () => window.removeEventListener(SELECT_EVENT, onSelect);
   }, []);
@@ -119,7 +154,7 @@ export default function Showcase() {
       surface="ink"
       sub="Bersua membantu bisnis membangun website dari konsep, desain, hingga siap digunakan sesuai dengan karakter dan kebutuhan bisnis Anda."
     >
-      <div className="sc-wrap">
+      <div className={`sc-wrap${paused ? " is-paused" : ""}`}>
         <div
           className="sc-stage"
           aria-roledescription="carousel"
@@ -154,7 +189,12 @@ export default function Showcase() {
           </div>
 
           {/* Tab thumbnail — garis progres di bawah yang aktif */}
-          <div className="sc-tabs" role="tablist" ref={tabsRef}>
+          <div
+            className="sc-tabs"
+            role="tablist"
+            ref={tabsRef}
+            onPointerDown={() => setPaused(true)}
+          >
             {demos.map((d, i) => (
               <button
                 key={d.tab}
@@ -162,7 +202,10 @@ export default function Showcase() {
                 role="tab"
                 aria-selected={i === active}
                 className={`sc-tab${i === active ? " is-active" : ""}`}
-                onClick={() => setActive(i)}
+                onClick={() => {
+                  setActive(i);
+                  setPaused(true);
+                }}
               >
                 <span className="sc-thumb">
                   <Image src={d.img} alt="" fill sizes="140px" unoptimized className="sc-thumb-img" />
@@ -242,7 +285,7 @@ export default function Showcase() {
         }
 
         .sc-caption {
-          max-width: 440px;
+          max-width: 400px;
           animation: sc-chip-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
@@ -301,7 +344,7 @@ export default function Showcase() {
         .sc-thumb {
           position: relative;
           display: block;
-          width: clamp(64px, 6.5vw, 96px);
+          width: clamp(56px, 5vw, 84px); /* 8 tab tetap muat di samping keterangan */
           aspect-ratio: 16 / 9;
           border-radius: 4px;
           overflow: hidden;
@@ -336,6 +379,9 @@ export default function Showcase() {
         /* Berhenti saat kursor di panggung/tab — beri waktu membaca */
         .sc-wrap:hover .sc-progress-bar { animation-play-state: paused; }
 
+        /* Setelah dipakai pengunjung: tanpa ganti otomatis, garis aktif penuh */
+        .sc-wrap.is-paused .sc-progress-bar { animation: none; transform: scaleX(1); }
+
 
         @keyframes sc-progress {
           from { transform: scaleX(0); }
@@ -353,13 +399,15 @@ export default function Showcase() {
           .sc-caption { max-width: none; }
         }
 
-        /* Mobile: 6 tab tidak muat — baris digeser horizontal */
+        /* Mobile: 8 tab tidak muat — baris digeser horizontal */
         @media (max-width: 640px) {
           .sc-tabs {
             align-self: stretch;
             gap: 8px;
             overflow-x: auto;
-            scroll-snap-type: x mandatory;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
             scrollbar-width: none;
           }
           .sc-tabs::-webkit-scrollbar { display: none; }
