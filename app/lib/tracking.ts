@@ -1,13 +1,14 @@
 /**
  * tracking.ts
- * GA4 event helpers — satu tempat untuk semua tracking event halaman.
- * Semua fungsi silent-fail jika gtag belum tersedia (SSR / ad-block).
+ * GA4 + Meta Pixel event helpers — satu tempat untuk semua tracking event halaman.
+ * Semua fungsi silent-fail jika gtag/fbq belum tersedia (SSR / ad-block).
  */
 
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
     clarity?: (...args: unknown[]) => void;
+    fbq?: (...args: unknown[]) => void;
   }
 }
 
@@ -18,9 +19,22 @@ function track(eventName: string, params?: Record<string, string | number>) {
   }
 }
 
+/* Meta Pixel: standard event dipakai untuk optimasi iklan, custom event untuk
+   rincian per section. */
+function trackMeta(eventName: string, params?: Record<string, string | number>) {
+  if (typeof window === "undefined") return;
+  if (typeof window.fbq === "function") {
+    window.fbq("track", eventName, params ?? {});
+  }
+}
+
 /* ─── CTA Click Events ───────────────────────────────────────────────────── */
-export const trackWAClick = (location: string) =>
+/* Klik WhatsApp = konversi utama LP → dikirim sebagai "Contact" ke Meta agar
+   kampanye bisa dioptimasi ke event ini. */
+export const trackWAClick = (location: string) => {
   track("wa_click", { click_location: location });
+  trackMeta("Contact", { content_name: location });
+};
 
 /* ─── Scroll Depth ───────────────────────────────────────────────────────── */
 export function initScrollDepthTracking() {

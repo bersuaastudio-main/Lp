@@ -92,6 +92,8 @@ Ubah hanya A/CNAME. Setelah itu tes kirim **dan** terima email.
 ### 06 — Tracking & Security
 - [ ] `NEXT_PUBLIC_GA_ID` terisi, realtime GA4 menerima kunjungan
 - [ ] Event `wa_click` muncul saat CTA diklik
+- [ ] `NEXT_PUBLIC_META_PIXEL_ID` terisi; Meta Pixel Helper / Events Manager
+      (Test Events) menerima `PageView` dan `Contact` saat CTA WhatsApp diklik
 - [ ] `npm audit` bersih
 - [ ] Tidak ada secret di repo
 
@@ -121,4 +123,5 @@ npm audit        # cek kerentanan dependensi
 - Komponen `Demo.tsx` (contoh hasil kerja) belum dirender di `app/page.tsx` —
   aktifkan dengan menambahkan `<Demo />` saat asetnya siap.
 - Analytics event ada di `app/lib/tracking.ts`: `wa_click`, `scroll_depth`,
-  `section_view`.
+  `section_view`. Meta Pixel menerima `PageView` (otomatis) dan `Contact`
+  (setiap klik WhatsApp, dengan `content_name` = lokasi CTA).

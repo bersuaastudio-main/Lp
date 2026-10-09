@@ -1,5 +1,6 @@
 import Section from "./Section";
-import { WA_NUMBER, WA_DEFAULT } from "@/app/lib/constants";
+import CTAButton from "./CTAButton";
+import { WA_DEFAULT } from "@/app/lib/constants";
 
 /** 09 · Mulai — naskah dari content.md S9. Menyebut apa yang terjadi setelah klik (REQ-C9.2). */
 export default function CTAPenutup() {
@@ -14,14 +15,9 @@ export default function CTAPenutup() {
     >
       <div style={{ maxWidth: 620, marginInline: "auto", textAlign: "center" }}>
         <div className="ctap-wrap">
-          <a
-            href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary-inverted"
-          >
+          <CTAButton location="cta_penutup" message={message} inverted>
             Konsultasi Gratis
-          </a>
+          </CTAButton>
         </div>
       </div>
 
