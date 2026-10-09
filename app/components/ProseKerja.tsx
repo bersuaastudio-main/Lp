@@ -231,11 +231,17 @@ export default function ProseKerja() {
         .pk-trigger:hover,
         .pk-item.is-open .pk-trigger { color: var(--color-studio-ink); }
 
+        /* Nomor tahap: cukup kontras agar terbaca (ink-20 sebelumnya hampir hilang) */
         .pk-item-num {
-          font-size: 12px;
+          min-width: 1.6em;
+          font-size: 13px;
           font-variant-numeric: tabular-nums;
-          color: var(--color-ink-20);
+          color: rgba(26, 26, 26, 0.5);
+          transition: color 0.2s ease;
         }
+
+        .pk-trigger:hover .pk-item-num,
+        .pk-item.is-open .pk-item-num { color: var(--color-studio-ink); }
 
         /* Garis progres di tepi atas item yang terbuka */
         .pk-progress {
@@ -399,7 +405,7 @@ export default function ProseKerja() {
         .pk-seg-label {
           font-size: 12px;
           font-variant-numeric: tabular-nums;
-          color: var(--color-ink-20);
+          color: rgba(26, 26, 26, 0.4);
         }
 
         .pk-seg.is-done .pk-seg-label { color: var(--color-ink-60); }

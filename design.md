@@ -127,10 +127,13 @@ Dasar foto memudar 32% ke `#1a1a1a` supaya menyatu dengan Featured Project.
 Tablet/mobile: foto jadi banner (3:2 / 4:5), kartu tersusun di bawahnya.
 
 ### Featured Project
-Panggung 16:9 (4:3 tablet, 4:5 mobile) berlatar gelap: mockup utuh (`contain`) di depan,
-salinan blur sebagai latar. Dua chip kaca kiri atas (nama bisnis + keputusan desain).
-Tab thumbnail tengah bawah dengan garis progres; ganti otomatis tiap 6 detik,
-jeda saat hover, bisa diklik.
+Panggung 16:9 (4:3 tablet, 4:5 mobile) berlatar gelap, dibagi tiga pita:
+atas = dua chip kaca sejajar (nama bisnis + keputusan desain) · tengah = tangkapan
+layar website utuh (`contain`) dengan bayangan · bawah = enam tab thumbnail dengan
+garis progres. Salinan blur gambar mengisi latar. Ganti otomatis tiap 6 detik, jeda
+saat hover, bisa diklik; di HP baris tab digeser dan tab aktif ikut digulir ke layar.
+Proyek: Gatra (batik) · Hayati House (greenhouse) · Aruna Energi (panel surya) ·
+Sakhia (gorden) · Niken Ecoprint (fashion) · Freshville (sayuran B2B).
 
 ### Founder quote
 Satu kolom tanpa foto: tanda kutip besar redup → kutipan putih → nama & peran.
@@ -235,7 +238,8 @@ tebal di WhatsApp). Nomor, domain, dan label CTA hanya diubah di file itu.
 | `favicon.ico`, `favicon-32x32.png`, `apple-touch-icon.png` | Tab & home screen | Mark putih di kotak hitam |
 | `img/untuk-siapa-bg-2.webp` | Untuk siapa | 1672×941, 95KB |
 | `img/cta-bg-landscape.jpg` | CTA penutup | 1308×736 |
-| `img/*.webp` (supplier, Services, bbrand, Hospitality) | Kategori & Showcase | Disajikan `unoptimized` |
+| `img/*.webp` (supplier, Services, bbrand, Hospitality) | Kategori | Disajikan `unoptimized` |
+| `img/porto-web/*.webp` | Featured Project | Tangkapan layar hero 1600px, sumber PNG di `img/Porto/` |
 
 Sumber logo asli: `C:\Bersua\Logo\Logo Abstrak Gelombang dengan Titik.png` (PNG
 transparan, mark putih). Versi gelap/putih dibuat dengan mewarnai ulang kanal alfanya.

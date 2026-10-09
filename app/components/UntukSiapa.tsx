@@ -110,7 +110,7 @@ export default function UntukSiapa() {
         .us-heading-wrap {
           position: relative;
           z-index: 1;
-          padding: clamp(40px, 4.5vw, 72px) var(--spacing-24) 0;
+          padding: calc(clamp(40px, 4.5vw, 72px) - 8px) var(--spacing-24) 0; /* dinaikkan 8px */
           text-align: center;
         }
 
@@ -226,7 +226,7 @@ export default function UntukSiapa() {
             top: 0;
             left: 0;
             right: 0;
-            padding-top: clamp(24px, 5vw, 56px);
+            padding-top: calc(clamp(24px, 5vw, 56px) - 8px);
           }
 
           .us-heading { font-size: clamp(24px, 4.4vw, 40px); }
@@ -259,7 +259,7 @@ export default function UntukSiapa() {
         @media (max-width: 640px) {
           .us-floats { grid-template-columns: 1fr; margin-top: -24px; padding-bottom: var(--spacing-48); }
           .us-heading { max-width: 11em; font-size: clamp(22px, 6.2vw, 26px); }
-          .us-heading-wrap { padding-top: 20px; }
+          .us-heading-wrap { padding-top: 12px; }
           /* Banner lebih tinggi supaya judul punya ruang langit, tidak menimpa layar */
           .us-bg { aspect-ratio: 4 / 5; object-position: center 70%; }
           .us-stage::after { top: calc(100vw * 1.25 - 160px); }
