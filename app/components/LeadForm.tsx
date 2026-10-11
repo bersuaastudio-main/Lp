@@ -30,6 +30,8 @@ export default function LeadForm() {
   const [namaBisnis, setNamaBisnis] = useState("");
   const [bisnis, setBisnis] = useState("");
   const [paket, setPaket] = useState("");
+  /* Dibuka dari kartu harga → paket sudah ditentukan tombolnya, pilihan disembunyikan */
+  const [paketLocked, setPaketLocked] = useState(false);
   const [pesan, setPesan] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
@@ -37,7 +39,8 @@ export default function LeadForm() {
     const onOpen = (e: Event) => {
       const d = (e as CustomEvent<OpenDetail>).detail;
       setLocation(d.location);
-      if (d.paket) setPaket(d.paket);
+      setPaket(d.paket ?? "");
+      setPaketLocked(Boolean(d.paket));
       setErrors({});
       ref.current?.showModal();
       trackLeadFormOpen(d.location);
@@ -104,6 +107,7 @@ export default function LeadForm() {
 
         <header className="lf-head">
           <h2 id="lf-title" className="lf-title">Siap mulai project?</h2>
+          {paketLocked && <p className="lf-paket">Paket {paket}</p>}
           <p className="lf-sub">Isi form singkat ini, kami balas langsung via WhatsApp.</p>
         </header>
 
@@ -156,26 +160,28 @@ export default function LeadForm() {
           </label>
         </div>
 
-        <fieldset className="lf-field lf-fieldset">
-          <legend className="lf-label">Tertarik paket?</legend>
-          <div className="lf-options">
-            {PACKAGE_OPTIONS.map((o) => (
-              <button
-                key={o.name}
-                type="button"
-                className={`lf-option${paket === o.name ? " is-selected" : ""}`}
-                aria-pressed={paket === o.name}
-                onClick={() => setPaket(paket === o.name ? "" : o.name)}
-              >
-                <span className="lf-option-name">{o.name}</span>
-                <span className="lf-option-price">
-                  {o.anchor && <s className="lf-option-anchor">{o.anchor}</s>}
-                  {o.price}
-                </span>
-              </button>
-            ))}
-          </div>
-        </fieldset>
+        {!paketLocked && (
+          <fieldset className="lf-field lf-fieldset">
+            <legend className="lf-label">Tertarik paket?</legend>
+            <div className="lf-options">
+              {PACKAGE_OPTIONS.map((o) => (
+                <button
+                  key={o.name}
+                  type="button"
+                  className={`lf-option${paket === o.name ? " is-selected" : ""}`}
+                  aria-pressed={paket === o.name}
+                  onClick={() => setPaket(paket === o.name ? "" : o.name)}
+                >
+                  <span className="lf-option-name">{o.name}</span>
+                  <span className="lf-option-price">
+                    {o.anchor && <s className="lf-option-anchor">{o.anchor}</s>}
+                    {o.price}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </fieldset>
+        )}
 
         <label className="lf-field">
           <span className="lf-label">
@@ -285,6 +291,14 @@ export default function LeadForm() {
         }
 
         .lf-fieldset .lf-label { margin-bottom: 8px; }
+
+        .lf-paket {
+          font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+          font-size: 11px;
+          letter-spacing: 0.6px;
+          text-transform: uppercase;
+          color: var(--color-ink-60);
+        }
 
         .lf-optional { text-transform: none; letter-spacing: 0; color: var(--color-ink-60); }
 

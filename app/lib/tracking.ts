@@ -28,6 +28,13 @@ function trackMeta(eventName: string, params?: Record<string, string | number>) 
   }
 }
 
+function trackMetaCustom(eventName: string, params?: Record<string, string | number>) {
+  if (typeof window === "undefined") return;
+  if (typeof window.fbq === "function") {
+    window.fbq("trackCustom", eventName, params ?? {});
+  }
+}
+
 /* ─── CTA Click Events ───────────────────────────────────────────────────── */
 /* Klik WhatsApp = konversi utama LP → dikirim sebagai "Contact" ke Meta agar
    kampanye bisa dioptimasi ke event ini. */
@@ -37,9 +44,12 @@ export const trackWAClick = (location: string) => {
 };
 
 /* Form leads dibuka — langkah sebelum konversi; dipisah dari wa_click agar
-   tingkat penyelesaian form bisa diukur (open → wa_click). */
+   tingkat penyelesaian form bisa diukur (open → wa_click).
+   Di Meta tiap tombol jadi event sendiri (CTA_hero, CTA_navbar, …) supaya
+   langsung terbaca terpisah di Events Manager tanpa Event Setup Tool. */
 export const trackLeadFormOpen = (location: string) => {
   track("lead_form_open", { click_location: location });
+  trackMetaCustom(`CTA_${location}`, { button: location });
 };
 
 /* ─── Scroll Depth ───────────────────────────────────────────────────────── */

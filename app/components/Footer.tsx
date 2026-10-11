@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { WA_NUMBER } from "@/app/lib/constants";
+import FooterWALink from "./FooterWALink";
 
 /**
  * Footer — permukaan gelap (Studio Ink), tiga kolom editorial:
@@ -84,9 +85,9 @@ export default function Footer() {
           <div className="footer-contact">
             <p className="footer-label">Konsultasi &amp; pertanyaan</p>
             <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noopener noreferrer">
+            <FooterWALink href={`https://wa.me/${WA_NUMBER}`}>
               {formatPhone(WA_NUMBER)}
-            </a>
+            </FooterWALink>
           </div>
 
           <nav className="footer-nav" aria-label="Navigasi footer">
