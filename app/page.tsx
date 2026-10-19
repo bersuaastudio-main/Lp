@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Showcase from "./components/Showcase";
 import UntukSiapa from "./components/UntukSiapa";
+import Testimoni from "./components/Testimoni";
+import Tentang from "./components/Tentang";
 import Harga from "./components/Harga";
 import ProseKerja from "./components/ProseKerja";
 import FAQ from "./components/FAQ";
@@ -38,14 +40,21 @@ export default function Home() {
         {/* 04 — Contoh hasil kerja: panggung showcase + tab thumbnail */}
         <Showcase />
 
-        {/* 05 — Harga: dibuka kutipan founder, satu label CTA */}
+        {/* 06 — Harga */}
         <Harga />
 
-        {/* 07 — Cara kerja: empat langkah + dua batasan */}
+        {/* 07 — Cara kerja: setelah harga, menjawab "lalu bagaimana prosesnya?" */}
         <ProseKerja />
+
+        {/* 08 — Testimoni: bukti sosial setelah harga & proses.
+            Di website live tersembunyi sampai ada kutipan klien asli. */}
+        <Testimoni />
 
         {/* 09 — Pertanyaan */}
         <FAQ />
+
+        {/* Kutipan founder — jembatan personal sebelum ajakan terakhir */}
+        <Tentang />
 
         {/* 10 — Mulai */}
         <CTAPenutup />

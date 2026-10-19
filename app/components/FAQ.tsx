@@ -38,6 +38,7 @@ export default function FAQ() {
       id="faq"
       track="faq"
       heading="Yang biasanya ditanyakan."
+      surface="white"
     >
       <div>
         {faqs.map((f) => (

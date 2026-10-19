@@ -1,9 +1,10 @@
 import Section from "./Section";
 import CTAButton from "./CTAButton";
+import { CTA_LABEL } from "@/app/lib/constants";
 
 /* Label khusus penutup — ajakan yang lebih personal di akhir halaman.
    Pesan WA ikut menyebut "diskusi" supaya isi chat sama dengan tombolnya. */
-const LABEL = "Diskusikan Bisnis Anda";
+const LABEL = CTA_LABEL;
 const MESSAGE =
   "Halo Bersua, saya ingin *mendiskusikan bisnis saya* untuk dibuatkan website.\n\nNama bisnis: *[ ]*\nBidang usaha: *[ ]*";
 
@@ -13,7 +14,7 @@ export default function CTAPenutup() {
     <Section
       id="mulai"
       track="cta_penutup"
-      heading="Saatnya membawa bisnis Anda bersaing di level global."
+      heading="Mulai dari diskusikan kebutuhan bagi bisnis Anda."
       surface="ink"
     >
       <div style={{ maxWidth: 620, marginInline: "auto", textAlign: "center" }}>

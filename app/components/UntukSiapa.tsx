@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { selectShowcase } from "./Showcase";
+import CarouselDots from "./CarouselDots";
 
 /**
  * 02 · Untuk Siapa — gabungan section Kategori + Untuk Siapa.
@@ -48,32 +49,36 @@ const ICONS: Record<string, React.ReactNode> = {
 /* `tab` = indeks portofolio di Showcase yang dibuka saat kartu diklik */
 const jenis = [
   {
-    id: "supplier-distributor",
-    icon: "supplier",
-    lead: "Supplier dan distributor",
-    body: "Pembeli grosir memeriksa kapasitas, legalitas, dan jangkauan Anda sebelum menghubungi.",
-    tab: 1, // Hayati House
-  },
-  {
-    id: "jasa-profesional",
-    icon: "jasa",
-    lead: "Jasa profesional",
-    body: "Klien membeli keahlian dan cara kerja — keduanya perlu terlihat sebelum percakapan dimulai.",
-    tab: 7, // Psikora
-  },
-  {
     id: "brand-produk",
     icon: "brand",
+    img: "/img/bbrand.webp",
     lead: "Brand dan produk",
-    body: "Harga premium perlu cerita di balik produknya, bukan sekadar katalog.",
+    body: "Bangun persepsi produk yang lebih kuat melalui presentasi yang profesional, informasi yang jelas, dan cerita di balik setiap keunggulannya.",
     tab: 0, // Gatra
   },
   {
     id: "hospitality-properti",
     icon: "hospitality",
+    img: "/img/Hospitality.webp",
     lead: "Hospitality dan properti",
-    body: "Tamu memesan suasana — foto dan lokasi harus meyakinkan sejak layar pertama.",
+    body: "Sebelum memesan, tamu ingin tahu apa yang akan mereka dapatkan. Hadirkan gambaran suasana, fasilitas, dan lokasi secara meyakinkan.",
     tab: 6, // Pesiarkan
+  },
+  {
+    id: "supplier-distributor",
+    icon: "supplier",
+    img: "/img/supplier-distributor.webp",
+    lead: "Supplier dan distributor",
+    body: "Permudah calon mitra mengevaluasi bisnis Anda melalui katalog produk, informasi perusahaan, dan kapabilitas pasokan dalam satu tempat.",
+    tab: 1, // Hayati House
+  },
+  {
+    id: "jasa-profesional",
+    icon: "jasa",
+    img: "/img/Services.webp",
+    lead: "Jasa profesional",
+    body: "Bangun kepercayaan sejak interaksi pertama melalui penjelasan layanan yang terarah, portofolio relevan, dan proses kerja yang transparan.",
+    tab: 7, // Psikora
   },
 ];
 
@@ -82,11 +87,11 @@ export default function UntukSiapa() {
     <section id="untuk-siapa" data-track-section="untuk_siapa" className="us-sec">
       <div className="us-stage">
         <Image
-          src="/img/untuk-siapa-bg-2.webp"
+          src="/img/untuk-siapa-person-cream.webp"
           alt=""
           fill
-          sizes="100vw"
-          unoptimized /* WebP 1672px, 95KB — sudah dioptimalkan */
+          sizes="(max-width: 1100px) 100vw, 800px"
+          unoptimized /* WebP 1086px, 36KB — latar sudah krem halaman */
           className="us-bg"
         />
 
@@ -94,7 +99,7 @@ export default function UntukSiapa() {
           <h2 className="us-heading">Untuk bisnis seperti apa Bersua bekerja?</h2>
         </header>
 
-        <div className="us-floats">
+        <div className="us-floats" id="us-floats">
           {jenis.map((k, i) => (
             <a
               key={k.id}
@@ -106,6 +111,15 @@ export default function UntukSiapa() {
                 selectShowcase(k.tab);
               }}
             >
+              <span className="us-thumb">
+                <Image
+                  src={k.img}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 90vw, (max-width: 1100px) 45vw, 300px"
+                  unoptimized /* WebP ±100–150KB — sudah ringan */
+                />
+              </span>
               <div className="us-card-head">
                 <span className="us-icon-wrap">
                   <svg className="us-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -124,6 +138,7 @@ export default function UntukSiapa() {
             </a>
           ))}
         </div>
+        <CarouselDots targetId="us-floats" count={jenis.length} label="Pilih jenis bisnis" />
       </div>
 
       <style>{`
@@ -135,14 +150,26 @@ export default function UntukSiapa() {
 
         .us-stage {
           position: relative;
-          height: clamp(600px, 56.25vw, 1000px);
+          /* Tinggi minimal mengikuti rasio foto; bertambah sendiri bila kartu
+             (dengan gambar) butuh ruang lebih, jadi tidak ada yang terpotong */
+          display: flex;
+          flex-direction: column;
+          min-height: clamp(720px, 56.25vw, 1000px);
           overflow: hidden;
         }
 
+        /* Latar putih foto sudah dikalikan ke krem halaman (#f8f8f2), jadi foto
+           menyatu tanpa batas dengan latar section ini. */
+        .us-stage {
+          background: var(--color-cream-paper);
+        }
         .us-bg {
-          object-fit: cover;
-          object-position: center 62%;
+          object-fit: contain;
+          object-position: center bottom;
           border-radius: 0;
+          /* Foto mulai sedikit di bawah judul, supaya judul tidak menempel di kepala */
+          top: 9% !important;
+          height: 91% !important;
         }
 
         /* Judul di area langit yang terang — teks gelap */
@@ -182,33 +209,41 @@ export default function UntukSiapa() {
           );
         }
 
+        /* Dua kolom kartu (kiri & kanan subjek). Kartu tersusun dengan jarak tetap,
+           jadi teks yang lebih panjang tidak membuat kartu saling menimpa. */
         .us-floats {
           z-index: 2;
-          position: absolute;
-          inset: 0;
+          position: relative;
+          flex: 1;
           pointer-events: none;
+          display: grid;
+          grid-template-columns: auto 1fr auto;
+          grid-template-rows: 1fr auto auto 1fr;
+          align-items: start;
+          column-gap: 24px;
+          row-gap: 16px;
+          padding: 24px 3% 56px;
         }
 
         .us-card {
-          position: absolute;
+          position: relative;
           width: clamp(240px, 19vw, 300px);
-          padding: 18px 20px 20px;
-          border-radius: 14px;
-          background: rgba(24, 26, 20, 0.38);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          backdrop-filter: blur(18px) saturate(1.2);
-          -webkit-backdrop-filter: blur(18px) saturate(1.2);
-          box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.45);
+          padding: 10px 10px 18px;
+          border-radius: 16px;
+          /* Kartu solid putih (gaya kartu listing), bukan kaca transparan */
+          background: var(--color-card-white);
+          border: 1px solid var(--color-ink-08);
+          box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.55);
           pointer-events: auto;
           scroll-margin-top: calc(var(--nav-height) + 16px);
           animation: us-float 7s ease-in-out infinite;
         }
 
         /* Posisi: dua di kiri, dua di kanan — menjauhi layar & sosok di tengah */
-        .us-pos-1 { left: 3%;  top: 34%; }
-        .us-pos-2 { left: 5%;  top: 64%; animation-delay: -2.5s; }
-        .us-pos-3 { right: 3%; top: 32%; animation-delay: -1.2s; }
-        .us-pos-4 { right: 5%; top: 62%; animation-delay: -4s; }
+        .us-pos-1 { grid-column: 1; grid-row: 2; }
+        .us-pos-2 { grid-column: 1; grid-row: 3; margin-left: 28px; animation-delay: -2.5s; }
+        .us-pos-3 { grid-column: 3; grid-row: 2; justify-self: end; margin-right: 28px; animation-delay: -1.2s; }
+        .us-pos-4 { grid-column: 3; grid-row: 3; justify-self: end; animation-delay: -4s; }
 
         @keyframes us-float {
           0%, 100% { transform: translateY(0); }
@@ -227,7 +262,8 @@ export default function UntukSiapa() {
           width: 30px;
           height: 30px;
           border-radius: 8px;
-          background: rgba(255, 255, 255, 0.14);
+          background: var(--color-cream-paper);
+          color: var(--color-studio-ink);
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -244,18 +280,31 @@ export default function UntukSiapa() {
         }
 
         /* Kartu = tautan ke contoh portofolio */
+        /* Gambar layanan di atas kartu (gaya kartu listing) */
+        .us-thumb {
+          position: relative;
+          display: block;
+          aspect-ratio: 2 / 1;
+          margin-bottom: 12px;
+          border-radius: 10px;
+          overflow: hidden;
+          background: var(--color-cream-paper);
+        }
+        .us-thumb img { object-fit: cover; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+        a.us-card:hover .us-thumb img { transform: scale(1.04); }
+        .us-card-head, .us-body, .us-link { margin-inline: 10px; }
+
         a.us-card {
           display: block;
           text-decoration: none;
           color: inherit;
           cursor: pointer;
-          transition: background-color 0.25s ease, border-color 0.25s ease;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
           -webkit-tap-highlight-color: transparent;
         }
 
         a.us-card:hover {
-          background: rgba(24, 26, 20, 0.55);
-          border-color: rgba(255, 255, 255, 0.32);
+          box-shadow: 0 28px 56px -24px rgba(0, 0, 0, 0.7);
         }
 
         a.us-card:focus-visible {
@@ -264,15 +313,17 @@ export default function UntukSiapa() {
         }
 
         .us-link {
-          display: inline-flex;
+          display: flex;
           align-items: center;
-          gap: 6px;
-          margin-top: 12px;
-          font-size: 13px;
-          letter-spacing: -0.1px;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 14px;
+          padding: 11px 16px;
+          border-radius: 10px;
+          background: var(--color-studio-ink);
           color: var(--color-card-white);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-          padding-bottom: 2px;
+          font-size: 14px;
+          letter-spacing: -0.1px;
         }
 
         .us-link svg { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -282,25 +333,27 @@ export default function UntukSiapa() {
           font-size: 16px;
           line-height: 1.3;
           letter-spacing: -0.3px;
-          color: var(--color-card-white);
+          color: var(--color-studio-ink);
         }
 
         .us-body {
           font-size: 14px;
           line-height: 1.5;
           letter-spacing: -0.1px;
-          color: rgba(255, 255, 255, 0.82);
+          color: var(--color-ink-60);
         }
 
         /* ── Tablet & mobile: foto jadi banner, kartu tersusun di bawahnya ── */
         @media (max-width: 1100px) {
-          .us-stage { height: auto; overflow: visible; }
+          .us-stage { display: block; min-height: 0; height: auto; overflow: visible; background: none; }
 
           .us-bg {
             position: relative !important;
+            top: auto !important;
             height: auto !important;
             aspect-ratio: 3 / 2;
-            object-position: center bottom;
+            object-fit: cover;
+            object-position: center 22%;
           }
 
           .us-heading-wrap {
@@ -332,18 +385,39 @@ export default function UntukSiapa() {
 
           .us-card {
             position: relative;
-            left: auto; right: auto; top: auto;
+            grid-column: auto;
+            grid-row: auto;
+            margin: 0;
             width: auto;
             animation: none;
           }
         }
 
+        /* HP: kartu jadi carousel geser — 4 kartu bergambar bertumpuk terlalu panjang */
+        @media (max-width: 767px) {
+          .us-floats {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-padding-inline: var(--spacing-24);
+            scrollbar-width: none;
+            pointer-events: auto;
+            padding-bottom: 8px;
+          }
+          .us-floats::-webkit-scrollbar { display: none; }
+          .us-card { flex: 0 0 82%; scroll-snap-align: center; }
+          #untuk-siapa .cdots { padding-bottom: var(--spacing-48); }
+          #untuk-siapa .cdots-dot::after { background: rgba(255, 255, 255, 0.3); }
+          #untuk-siapa .cdots-dot.is-active::after { background: var(--color-card-white); }
+        }
+
         @media (max-width: 640px) {
-          .us-floats { grid-template-columns: 1fr; margin-top: -24px; padding-bottom: var(--spacing-48); }
+          .us-floats { margin-top: -24px; }
           .us-heading { max-width: 11em; font-size: clamp(22px, 6.2vw, 26px); }
           .us-heading-wrap { padding-top: 12px; }
           /* Banner lebih tinggi supaya judul punya ruang langit, tidak menimpa layar */
-          .us-bg { aspect-ratio: 4 / 5; object-position: center 70%; }
+          .us-bg { aspect-ratio: 4 / 5; object-position: center 8%; }
           .us-stage::after { top: calc(100vw * 1.25 - 160px); }
         }
 

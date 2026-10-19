@@ -19,7 +19,9 @@ const FOOTER_LINKS = [
    Hapus entri sosial yang tidak dipakai. */
 const CONTACT_EMAIL = "hello@bersua.space";
 
-const SOCIALS: { label: string; href: string; icon: React.ReactNode }[] = [
+/* Isi `href` dengan URL profil asli. Ikon dengan href "#" disembunyikan otomatis —
+ * tautan mati lebih merusak kepercayaan daripada tidak ada ikon sama sekali. */
+const ALL_SOCIALS: { label: string; href: string; icon: React.ReactNode }[] = [
   {
     label: "Instagram",
     href: "#",
@@ -31,34 +33,9 @@ const SOCIALS: { label: string; href: string; icon: React.ReactNode }[] = [
       </svg>
     ),
   },
-  {
-    label: "LinkedIn",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
-        <path d="M4.98 3.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5zM3 9.75h4V21H3V9.75zm6.5 0h3.8v1.6h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1V21h-4v-4.95c0-1.18-.02-2.7-1.65-2.7-1.65 0-1.9 1.29-1.9 2.62V21h-4V9.75z" />
-      </svg>
-    ),
-  },
-  {
-    label: "TikTok",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
-        <path d="M16.6 2h-3.4v13.3a3 3 0 11-2.1-2.86V9a6.4 6.4 0 105.5 6.33V8.6a8 8 0 004.4 1.32V6.5A4.6 4.6 0 0116.6 2z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Behance",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
-        <path d="M8.2 11.4c.9-.4 1.5-1.2 1.5-2.4 0-2.2-1.6-3-3.7-3H1v12h5.2c2.2 0 4.2-1.1 4.2-3.5 0-1.5-.7-2.7-2.2-3.1zM3.4 8h2.2c.8 0 1.6.2 1.6 1.2 0 .9-.6 1.3-1.4 1.3H3.4V8zm2.5 8H3.4v-3.3h2.6c1 0 1.7.4 1.7 1.6 0 1.2-.8 1.7-1.8 1.7zM17.6 8.6c-2.9 0-4.8 2.1-4.8 4.8 0 2.8 1.8 4.8 4.8 4.8 2.2 0 3.7-1 4.4-3.2h-2.3c-.2.8-1.2 1.2-2 1.2-1.5 0-2.3-.9-2.3-2.4h6.7c.1-3.1-1.7-5.2-4.5-5.2zm-2.2 4c.1-1.3.9-2.1 2.1-2.1 1.3 0 1.9.8 2 2.1h-4.1zM15.1 6.5h5.2V7.8h-5.2z" />
-      </svg>
-    ),
-  },
 ];
+
+const SOCIALS = ALL_SOCIALS.filter((s) => s.href && s.href !== "#");
 
 /** "6287890205695" → "+62 878 9020 5695" */
 const formatPhone = (n: string) =>

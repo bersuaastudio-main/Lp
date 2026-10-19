@@ -55,10 +55,9 @@ export default function LeadForm() {
     e.preventDefault();
     const next: Errors = {};
     if (!nama.trim()) next.nama = "Isi nama Anda dulu.";
-    if (!namaBisnis.trim()) next.namaBisnis = "Isi nama bisnis Anda dulu.";
     if (!bisnis.trim()) next.bisnis = "Isi jenis bisnis Anda dulu.";
     setErrors(next);
-    if (next.nama || next.namaBisnis || next.bisnis) return;
+    if (next.nama || next.bisnis) return;
 
     /* Kalimat pembuka mengikuti tombol asal, supaya chat sama dengan yang diklik */
     const fixedPrice = paket === "Starter" || paket === "Business Website";
@@ -73,7 +72,7 @@ export default function LeadForm() {
       opening,
       "",
       `Nama: *${nama.trim()}*`,
-      `Nama bisnis: *${namaBisnis.trim()}*`,
+      ...(namaBisnis.trim() ? [`Nama bisnis: *${namaBisnis.trim()}*`] : []),
       `Jenis bisnis: *${bisnis.trim()}*`,
       `Tertarik paket: *${paket || "Belum yakin"}*`,
     ];
@@ -129,7 +128,9 @@ export default function LeadForm() {
           </label>
 
           <label className="lf-field">
-            <span className="lf-label">Nama bisnis</span>
+            <span className="lf-label">
+              Nama bisnis <span className="lf-optional">(opsional)</span>
+            </span>
             <input
               className={`lf-input${errors.namaBisnis ? " has-error" : ""}`}
               value={namaBisnis}
@@ -192,7 +193,7 @@ export default function LeadForm() {
             value={pesan}
             onChange={(e) => setPesan(e.target.value)}
             placeholder="Contoh: Saya ingin tanya detail paket Business Website. Atau: saya belum punya logo…"
-            rows={4}
+            rows={3}
           />
         </label>
 
@@ -203,7 +204,6 @@ export default function LeadForm() {
           Lanjut ke WhatsApp
         </button>
 
-        <p className="lf-note">Data hanya dipakai untuk membalas pesan Anda.</p>
       </form>
 
       <style>{`
@@ -395,9 +395,14 @@ export default function LeadForm() {
         .lf-submit:hover { opacity: 0.88; }
         .lf-submit:active { transform: scale(0.98); }
 
-        .lf-note { font-size: 13px; color: var(--color-ink-60); text-align: center; margin-top: -6px; }
+
 
         @media (max-width: 560px) {
+          /* Panel harus muat satu layar HP: tombol kirim terlihat tanpa scroll */
+          .lf-panel { gap: 12px; padding: 18px 18px 16px; }
+          .lf-head { padding-inline: 28px; }
+          .lf-row { gap: 12px; }
+          .lf-textarea { min-height: 64px; }
           .lf-row { grid-template-columns: 1fr; }
           .lf-options { grid-template-columns: 1fr 1fr; }
         }

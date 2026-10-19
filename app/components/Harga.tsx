@@ -1,748 +1,424 @@
 import Section from "./Section";
 import CTAButton from "./CTAButton";
+import CarouselDots from "./CarouselDots";
 
-import { CTA_LABEL, CTA_CHOOSE, WA_DEFAULT, PROMO_NAME, PROMO_UNTIL, waPackage, waChoosePackage } from "@/app/lib/constants";
+import { CTA_LABEL, WA_DEFAULT, waPackage, waChoosePackage } from "@/app/lib/constants";
 
-/* Hover card memakai CSS transition (lihat .sol-card di <style> bawah), bukan
- * library animasi — satu efek tidak sepadan dengan ~124KB JS di bundle.
- * Kurva easing di bawah meniru rasa spring: cepat di awal, melambat di akhir. */
-
-/* ─── Data ────────────────────────────────────────────────────────────────────
- * Solution-based pricing architecture.
- * anchorPrice = harga standar (dicoret), launchPrice = harga yang berlaku.
- * Nominal "Hemat" dihitung otomatis dari selisih keduanya — jangan ditulis manual.
+/* ─── Harga ───────────────────────────────────────────────────────────────────
+ * Struktur mengikuti referensi: banner judul di atas, lalu tiga kartu.
+ * Tiap kartu = panel atas (label, nama, harga, deskripsi, tombol) yang terbaca
+ * dalam sekali lihat, lalu daftar isi paket dan satu baris syarat di bawahnya.
+ * `id` dipakai untuk tracking (pricing_<id>) — jangan diganti.
+ * `paket` harus sama dengan PACKAGE_OPTIONS di constants.ts (dibaca LeadForm).
  * --------------------------------------------------------------------------- */
 
-/** "Rp3.750.000" → 3750000; string tanpa angka → NaN */
-const parseRupiah = (s: string) => Number(s.replace(/[^\d]/g, ""));
-
-/** 1250000 → "Rp1.250.000" */
-const formatRupiah = (n: number) => `Rp${n.toLocaleString("id-ID")}`;
-
-/** Selisih anchor − launch; null jika salah satu tidak berupa nominal */
-function savingsOf(sol: { anchorPrice: string; launchPrice: string }): string | null {
-  const a = parseRupiah(sol.anchorPrice);
-  const l = parseRupiah(sol.launchPrice);
-  if (!a || !l || a <= l) return null;
-  return formatRupiah(a - l);
-}
-
-type Solution = {
+type Plan = {
   id: string;
-  tag: string;
+  step: string;
   title: string;
-  positioning: string;
+  price: string;
+  /** Satuan kecil di samping harga; kosong untuk "Hubungi kami". */
+  priceUnit?: string;
   description: string;
-  anchorPrice: string;
-  launchPrice: string;
-  priceNote?: string;
-  featuresLabel?: string;
-  features?: string[];
-  featureGroups?: { label: string; items: string[] }[];
-  hostingNote?: string;
-  timeline?: string;
-  bottomNote?: string;
+  listLabel: string;
+  items: string[];
+  meta: string;
   cta: string;
+  paket: string;
   waMessage: string;
-  primary: boolean;
+  featured?: boolean;
 };
 
-const SOLUTIONS: Solution[] = [
+const PLANS: Plan[] = [
   {
     id: "launch",
-    tag: "01 — Launch",
+    step: "01 / Mulai",
     title: "Starter",
-    positioning: "Mulai hadir secara profesional di dunia digital.",
+    price: "Rp1.000.000",
     description:
-      "Untuk bisnis yang membutuhkan satu halaman terarah untuk memperkenalkan produk, layanan, atau mendapatkan lebih banyak inquiry.",
-    anchorPrice: "Rp1.600.000",
-    launchPrice: "Rp1.100.000",
-    featureGroups: [
-      {
-        label: "Website",
-        items: [
-          "Satu halaman, hingga 7 bagian",
-          "Rapi di HP dan desktop",
-        ],
-      },
-      {
-        label: "Mudah dihubungi",
-        items: [
-          "Tombol WhatsApp & formulir kontak",
-          "Terhubung ke media sosial",
-          "Dasar agar mudah ditemukan di Google",
-        ],
-      },
-      {
-        label: "Termasuk",
-        items: ["1x revisi", "Domain + hosting 1 tahun"],
-      },
+      "Untuk bisnis yang ingin memperkenalkan perusahaan dan produk secara profesional dalam satu halaman.",
+    listLabel: "Yang Anda dapatkan",
+    items: [
+      "Website satu halaman hingga 7 bagian",
+      "Profil bisnis dan produk utama",
+      "Tombol WhatsApp untuk inquiry",
+      "Tampilan optimal di HP dan desktop",
+      "Domain dan hosting 1 tahun",
+      "Website online dan siap digunakan",
     ],
-    timeline: "Pengerjaan 2–3 hari",
-    cta: CTA_CHOOSE,
+    meta: "Termasuk 1 kali revisi · Estimasi 2–3 hari kerja*",
+    cta: "Pilih Starter",
+    paket: "Starter",
     waMessage: waChoosePackage("Starter"),
-    primary: false,
   },
   {
     id: "build",
-    tag: "02 — Build",
+    step: "02 / Tumbuh",
     title: "Business Website",
-    positioning: "Bangun kredibilitas. Tumbuhkan bisnis.",
+    price: "Rp2.500.000",
     description:
-      "Website profil bisnis yang profesional untuk membangun kredibilitas dan membantu calon pelanggan mengenal bisnis Anda.",
-    anchorPrice: "Rp3.750.000",
-    launchPrice: "Rp2.500.000",
-    featureGroups: [
-      {
-        label: "Website",
-        items: [
-          "3–5 halaman, navigasi jelas",
-          "Rapi di HP dan desktop",
-          "Tombol WhatsApp & formulir inquiry",
-        ],
-      },
-      {
-        label: "Ditemukan & terukur",
-        items: [
-          "Fondasi agar mudah ditemukan di Google",
-          "Data pengunjung (Google Analytics)",
-          "Terhubung ke media sosial",
-        ],
-      },
-      {
-        label: "Termasuk",
-        items: [
-          "2x revisi",
-          "Domain + hosting 1 tahun",
-          "Dipasang sampai online",
-          "Dukungan setelah launch",
-        ],
-      },
+      "Website profesional dengan CMS untuk mengelola informasi bisnis dan produk secara mandiri.",
+    listLabel: "Semua fitur Starter, ditambah:",
+    items: [
+      "Website 3–5 halaman dengan navigasi terstruktur",
+      "CMS untuk mengelola konten website tanpa mengubah kode",
+      "Katalog produk yang dapat diperbarui melalui CMS",
+      "Informasi perusahaan, kapabilitas, dan wilayah distribusi",
+      "Formulir permintaan penawaran",
+      "Fondasi SEO on-page dan analytics dasar",
+      "2 kali revisi",
+      "Panduan penggunaan CMS dan dukungan pascapeluncuran sesuai cakupan",
     ],
-    timeline: "Pengerjaan 4–5 hari",
-    cta: CTA_CHOOSE,
+    meta: "Estimasi pengerjaan 4–5 hari kerja*",
+    cta: "Pilih Business Website",
+    paket: "Business Website",
     waMessage: waChoosePackage("Business Website"),
-    primary: true,
+    featured: true,
   },
   {
     id: "custom",
-    tag: "03 — Custom",
+    step: "03 / Kebutuhan khusus",
     title: "Custom Digital Solution",
-    positioning: "Bangun solusi digital sesuai proses bisnis Anda.",
-    description:
-      "Untuk kebutuhan yang membutuhkan fungsi, integrasi, atau alur operasional bisnis Anda.",
-    anchorPrice: "",
-    launchPrice: "Hubungi Kami",
-    featuresLabel: "Contoh kebutuhan:",
-    features: [
-      "Toko online",
-      "Pembayaran online",
-      "Sistem booking",
-      "Dashboard internal",
-      "Integrasi CRM",
-      "Otomatisasi proses bisnis",
+    price: "Hubungi kami",
+    description: "Untuk kebutuhan digital yang lebih spesifik dari website standar.",
+    listLabel: "Contoh solusi",
+    items: [
+      "Katalog produk berskala besar",
+      "Sistem pemesanan atau toko online",
+      "Integrasi CRM dan automasi",
+      "Dashboard operasional",
     ],
-    bottomNote:
-      "Waktu dan harga akhir mengikuti cakupan proyek.",
+    meta: "Scope, harga, dan timeline ditentukan berdasarkan kebutuhan.",
     cta: CTA_LABEL,
+    paket: "Custom",
     waMessage: waPackage("Custom Digital Solution"),
-    primary: false,
   },
 ];
 
-function SolutionCard({ sol }: { sol: Solution }) {
-  const savings = savingsOf(sol);
-
+function Check() {
   return (
-    <div className={`sol-card${sol.primary ? " is-primary" : ""}`}>
-      {sol.primary ? (
-        <span className="sol-badge">Recommended</span>
-      ) : (
-        <span className="sol-badge-spacer" aria-hidden="true" />
-      )}
+    <svg className="pr-check" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">
+      <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
-      <div className="sol-header">
-        <h3 className="sol-title">{sol.title}</h3>
-        <p className="sol-desc">{sol.description}</p>
+function PlanCard({ plan }: { plan: Plan }) {
+  return (
+    <article className={`pr-card${plan.featured ? " is-featured" : ""}`}>
+      <div className="pr-top">
+        <div className="pr-step-row">
+          <p className="pr-step">{plan.step}</p>
+          {plan.featured && <span className="pr-badge">Pilihan utama</span>}
+        </div>
+
+        <h3 className="pr-title">{plan.title}</h3>
+        <p className="pr-desc">{plan.description}</p>
+
+        <p className="pr-price">
+          <span className="pr-amount">{plan.price}</span>
+          {plan.priceUnit && <span className="pr-unit">{plan.priceUnit}</span>}
+        </p>
+
+        <CTAButton
+          location={`pricing_${plan.id}`}
+          paket={plan.paket}
+          message={plan.waMessage}
+          className="pr-cta"
+          inverted={plan.featured}
+        >
+          {plan.cta}
+        </CTAButton>
       </div>
 
-      <div className="sol-pricing">
-        {sol.anchorPrice && (
-          <p className="sol-anchor">
-            <s className="sol-anchor-price">{sol.anchorPrice}</s>
-          </p>
-        )}
-        <p className="sol-launch-price">{sol.launchPrice}</p>
-        {savings && (
-          <p className={`sol-savings${sol.primary ? " sol-savings--dark" : ""}`}>
-            Hemat {savings}
-          </p>
-        )}
-        {sol.priceNote && (
-          <p className="sol-price-note">{sol.priceNote}</p>
-        )}
+      <div className="pr-bottom">
+        <p className="pr-list-label">{plan.listLabel}</p>
+        <ul className="pr-list">
+          {plan.items.map((item) => (
+            <li key={item}>
+              <Check />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="pr-meta">{plan.meta}</p>
       </div>
-
-      <div className="sol-features-wrap">
-        {sol.featureGroups ? (
-          sol.featureGroups.map((g) => (
-            <div key={g.label} className="sol-feature-group">
-              <p className="sol-features-label">{g.label}</p>
-              <ul className="sol-features">
-                {g.items.map((f) => (
-                  <li key={f}>{f}</li>
-                ))}
-              </ul>
-            </div>
-          ))
-        ) : (
-          <>
-            {sol.featuresLabel && (
-              <p className="sol-features-label">{sol.featuresLabel}</p>
-            )}
-            <ul className="sol-features">
-              {sol.features?.map((f) => (
-                <li key={f}>{f}</li>
-              ))}
-              {sol.hostingNote && (
-                <li className="sol-feature-hosting">{sol.hostingNote}</li>
-              )}
-            </ul>
-          </>
-        )}
-      </div>
-
-      {sol.timeline && <p className="sol-timeline">{sol.timeline}</p>}
-      {sol.bottomNote && <p className="sol-bottom-note">{sol.bottomNote}</p>}
-
-      <CTAButton
-        location={`pricing_${sol.id}`}
-        paket={sol.id === "custom" ? "Custom" : sol.title}
-        message={sol.waMessage}
-        fullWidth
-        inverted={sol.primary}
-      >
-        {sol.cta}
-      </CTAButton>
-    </div>
+    </article>
   );
 }
 
 export default function Harga() {
   return (
-    <Section
-      id="harga"
-      track="harga"
-      heading="Pilih solusi yang sesuai kebutuhan bisnis Anda."
-      surface="ink"
-      kicker={
-        <figure className="harga-quote">
-          <blockquote>
-            &ldquo;Di era ketika website semakin mudah dibuat, apakah website Anda
-            benar-benar tepat untuk bisnis Anda?&rdquo;
-          </blockquote>
-          <figcaption>Rafif, Founder Bersua</figcaption>
-        </figure>
-      }
-    >
-      {/* 3 solution cards — horizontal row */}
-      <div className="sol-grid">
-        {SOLUTIONS.map((s) => (
-          <SolutionCard key={s.id} sol={s} />
-        ))}
-      </div>
-
-      {/* REQ-C6.13 — harga coret wajib menyebut alasannya */}
-      <p className="harga-promo">
-        Harga coret adalah harga normal. Harga promo {PROMO_NAME} berlaku hingga{" "}
-        {PROMO_UNTIL}.
-      </p>
-
-      {/* Secondary consultation CTA */}
-      <div className="harga-consult">
-        <div>
-          <h3 className="harga-consult-t">
-            Punya kebutuhan yang spesifik?
+    <Section id="harga" track="harga" surface="ink">
+      <div className="pr-shell">
+        {/* Banner judul */}
+        <header className="pr-banner">
+          <h2 className="pr-banner-title">
+            Pilih solusi yang sesuai{" "}
             <br />
-            Belum yakin website seperti apa yang tepat untuk bisnis Anda?
-          </h3>
-          <p className="harga-consult-b">
-            Diskusikan kebutuhan bisnis Anda bersama kami.
+            kebutuhan bisnis Anda.
+          </h2>
+          <p className="pr-banner-sub">
+            Harga jelas di depan. Mulai dari satu halaman, berkembang sesuai
+            kebutuhan bisnis Anda.
           </p>
+        </header>
+
+        {/* Tiga kartu */}
+        <div className="pr-grid" id="pr-grid">
+          {PLANS.map((p) => (
+            <PlanCard key={p.id} plan={p} />
+          ))}
         </div>
-        <CTAButton
-          location="pricing_consult"
-          message={WA_DEFAULT}
-        >
+      </div>
+      {/* Di HP carousel dibuka di paket utama (Business Website) */}
+      <CarouselDots
+        targetId="pr-grid"
+        count={PLANS.length}
+        start={Math.max(0, PLANS.findIndex((p) => p.featured))}
+        label="Pilih paket"
+      />
+
+      <p className="pr-footnote">
+        *Estimasi dihitung setelah seluruh materi website diterima. Belum yakin
+        paket mana yang tepat?{" "}
+        <CTAButton location="pricing_consult" message={WA_DEFAULT} variant="link">
           {CTA_LABEL}
         </CTAButton>
-      </div>
+      </p>
 
       <style>{`
-        /* ── Override sec-body border untuk section harga ── */
-        #harga .sec-body {
-          border-top: none;
-          padding-top: 0;
+        #harga .sec-body { border-top: none; padding-top: 0; }
+
+        /* ── Wadah abu muda yang membingkai banner + kartu (seperti referensi) ── */
+        /* Latar hitam menyambung section Contoh hasil kerja di atasnya;
+           bingkai tipis transparan menggantikan bingkai abu muda */
+        .pr-shell {
+          background: rgba(255, 255, 255, 0.06);
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+          border-radius: 24px;
+          padding: 10px;
         }
 
-        /* ── Solution Grid ── */
-        .sol-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: var(--spacing-24);
-          align-items: stretch;
-          margin-bottom: var(--spacing-24);
-        }
-
-        .sol-grid-custom {
-          margin-bottom: var(--spacing-24);
-        }
-
-        .sol-grid-custom .sol-card {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          grid-template-rows: auto auto;
-          gap: var(--spacing-16) var(--spacing-40);
-          align-items: start;
-        }
-
-        /* Badge row spans all columns */
-        .sol-grid-custom .sol-badge-spacer { display: none; }
-
-        /* Header — col 1 */
-        .sol-grid-custom .sol-header {
-          grid-column: 1;
-          grid-row: 1;
-        }
-
-        /* Pricing — col 2 */
-        .sol-grid-custom .sol-pricing {
-          grid-column: 2;
-          grid-row: 1;
-        }
-
-        /* Features — col 3 */
-        .sol-grid-custom .sol-features {
-          grid-column: 3;
-          grid-row: 1;
-        }
-
-        /* CTA — col 3, row 2 */
-        .sol-grid-custom a.btn-primary,
-        .sol-grid-custom a.btn-primary-inverted {
-          grid-column: 3;
-          grid-row: 2;
-          width: 100%;
-        }
-
-        /* ── Solution Card ── */
-        /* Non-primary: slightly lighter than #1a1a1a section bg — elevation via color shift */
-        .sol-card {
-          border: none;
-          border-radius: var(--radius-xl);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-          transition:
-            transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-            box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-          will-change: transform, box-shadow;
-          padding: var(--card-padding);
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-24);
-          background-color: #272727;
-          color: var(--color-card-white);
-        }
-
-        .sol-card:hover {
-          transform: translateY(-5px) scale(1.03);
-          box-shadow: 0 12px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .sol-card { transition: none; }
-          .sol-card:hover { transform: none; }
-        }
-
-        /* Primary: white surface — strongest elevation contrast against dark section */
-        .sol-card.is-primary {
-          background-color: var(--color-card-white);
-          color: var(--color-studio-ink);
-          border: none;
-        }
-
-        /* ── Gradient lembut kartu (Aurora) ── */
-        /* Biru & mint pastel dari token palet, sangat tipis */
-        .sol-card:not(.is-primary) {
-          background:
-            radial-gradient(90% 60% at 100% 0%, rgba(190,219,255,0.16) 0%, rgba(190,219,255,0) 60%),
-            radial-gradient(90% 60% at 0% 100%, rgba(164,244,207,0.10) 0%, rgba(164,244,207,0) 60%),
-            linear-gradient(165deg, #262829 0%, #202122 100%);
-        }
-        .sol-card.is-primary {
-          background:
-            radial-gradient(100% 70% at 100% 0%, rgba(190,219,255,0.7) 0%, rgba(190,219,255,0) 60%),
-            radial-gradient(100% 70% at 0% 100%, rgba(164,244,207,0.45) 0%, rgba(164,244,207,0) 60%),
-            #ffffff;
-        }
-
-        /* Garis tepi tipis memberi bentuk pada kartu gelap di atas latar gelap */
-        .sol-card:not(.is-primary) { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07); }
-
-        /* Recommended badge — dark on white card */
-        .sol-badge {
-          align-self: flex-start;
-          background-color: var(--color-studio-ink);
-          color: var(--color-card-white);
-          border-radius: var(--radius-pill);
-          padding: 4px 12px;
-          font-size: var(--text-caption);
-          font-weight: 500;
-          letter-spacing: 0.6px;
-          text-transform: uppercase;
-        }
-
-        .sol-badge-spacer { display: block; height: 24px; }
-
-        /* ── Card header ── */
-        .sol-header { display: flex; flex-direction: column; gap: 6px; }
-
-        .sol-title {
-          font-size: var(--text-subheading);
-          font-weight: 500;
-          letter-spacing: var(--tracking-subheading);
-          line-height: var(--leading-subheading);
-        }
-
-        .sol-positioning {
-          font-size: var(--text-body);
-          font-weight: 400;
-          line-height: var(--leading-body);
-          letter-spacing: var(--tracking-body);
-        }
-
-        .sol-desc {
-          font-size: var(--text-caption);
-          font-weight: 400;
-          line-height: var(--leading-caption);
-          letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.72);
-        }
-
-        .sol-card.is-primary .sol-desc { color: rgba(26,26,26,0.72); }
-
-        /* ── Pricing ── */
-        .sol-pricing { display: flex; flex-direction: column; gap: 4px; }
-
-        /* Strikethrough anchor price */
-        .sol-anchor {
-          font-size: var(--text-caption);
-          font-weight: 400;
-          letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.5);
-        }
-
-        .sol-card.is-primary .sol-anchor { color: var(--color-ink-60); }
-
-        .sol-anchor-price { text-decoration: line-through; }
-
-        /* Founding price — primary display */
-        .sol-launch-price {
-          font-size: var(--text-heading);
-          font-weight: 500;
-          line-height: var(--leading-heading);
-          letter-spacing: var(--tracking-heading);
-        }
-
-        /* Savings callout */
-        .sol-savings {
-          font-size: var(--text-caption);
-          font-weight: 400;
-          letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.7);
-          margin-top: 2px;
-        }
-
-        .sol-card.is-primary .sol-savings { color: var(--color-ink-60); }
-
-        /* Override: savings on primary card */
-        .sol-savings--dark { color: var(--color-ink-60); }
-
-        .sol-price-note {
-          font-size: var(--text-caption);
-          font-weight: 400;
-          line-height: var(--leading-caption);
-          letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.6);
-          margin-top: 4px;
-        }
-
-        .sol-card.is-primary .sol-price-note { color: var(--color-ink-60); }
-
-        /* ── Features ── */
-        .sol-features-wrap {
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-8);
-          flex-grow: 1;
-        }
-
-        .sol-feature-group {
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-8);
-        }
-
-        .sol-feature-group + .sol-feature-group {
-          margin-top: var(--spacing-8);
-        }
-
-        .sol-features-label {
-          font-size: var(--text-caption);
-          font-weight: 400;
-          text-transform: uppercase;
-          letter-spacing: 0.6px;
-          line-height: var(--leading-caption);
-          color: rgba(255,255,255,0.6);
-        }
-
-        .sol-card.is-primary .sol-features-label { color: var(--color-ink-60); }
-
-        .sol-features {
-          list-style: none;
-          display: flex;
-          flex-direction: column;
-          gap: var(--spacing-8);
-        }
-
-        .sol-features li {
-          font-size: var(--text-body);
-          font-weight: 400;
-          line-height: var(--leading-body);
-          letter-spacing: var(--tracking-body);
-          color: rgba(255,255,255,0.85);
-          padding-left: var(--spacing-16);
+        /* ── Banner ── */
+        .pr-banner {
           position: relative;
+          overflow: hidden;
+          border-radius: 18px;
+          padding: clamp(28px, 4vw, 48px);
+          color: var(--color-card-white);
+          /* Bayangan daun hijau (foto diputar ke landscape: sisi gelap di kiri,
+             tepat di belakang judul putih). Gradasi tipis menjaga teks terbaca. */
+          background-color: #1f3d1f;
+          background-image:
+            linear-gradient(100deg, rgba(10, 30, 12, 0.55) 0%, rgba(10, 30, 12, 0.15) 60%, rgba(10, 30, 12, 0) 100%),
+            url("/img/harga-banner-leaf.webp");
+          background-size: cover;
+          background-position: center 40%;
         }
-
-        .sol-card.is-primary .sol-features li { color: var(--color-studio-ink); }
-
-        /* dash marker */
-        .sol-features li::before {
-          content: "";
-          position: absolute;
-          left: 0;
-          top: 11px;
-          width: 6px;
-          height: 1px;
-          background-color: rgba(255,255,255,0.4);
-        }
-
-        .sol-card.is-primary .sol-features li::before {
-          background-color: var(--color-ink-20);
-        }
-
-        /* Domain/hosting footnote */
-        .sol-feature-hosting {
-          font-size: var(--text-caption);
+        .pr-banner-title {
+          margin: 0;
+          font-size: clamp(28px, 3.4vw, 44px);
           font-weight: 400;
-          letter-spacing: var(--tracking-caption);
-          color: rgba(255,255,255,0.5);
-          margin-top: var(--spacing-8);
-          padding-left: 0;
+          line-height: 1.1;
+          letter-spacing: -0.03em;
+        }
+        .pr-banner-sub {
+          margin: 14px 0 0;
+          max-width: 30em;
+          font-size: 16px;
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.78);
         }
 
-        .sol-feature-hosting::before { display: none; }
-
-        .sol-card.is-primary .sol-feature-hosting { color: var(--color-ink-60); }
-
-        /* Timeline pengerjaan */
-        .sol-timeline {
-          font-size: var(--text-caption);
-          font-weight: 400;
-          letter-spacing: var(--tracking-caption);
-          line-height: var(--leading-caption);
-          color: rgba(255,255,255,0.8);
-          padding-top: var(--spacing-16);
-          border-top: 1px solid rgba(255,255,255,0.08);
+        /* ── Grid kartu ── */
+        .pr-grid {
+          position: relative;
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 10px;
+          margin-top: 10px;
         }
 
-        .sol-card.is-primary .sol-timeline {
+        .pr-card {
+          display: flex;
+          flex-direction: column;
+          background: var(--color-card-white);
+          border-radius: 18px;
+          padding: 10px;
+          box-shadow: 0 0 0 1px var(--color-ink-08);
+        }
+        /* Paket utama: kartu gelap bergradasi agar langsung menonjol di antara dua kartu terang */
+        .pr-card.is-featured {
+          position: relative;
+          overflow: hidden;
+          color: var(--color-card-white);
+          background:
+            radial-gradient(120% 70% at 85% 0%, rgba(214, 196, 160, 0.38) 0%, rgba(214, 196, 160, 0) 60%),
+            linear-gradient(165deg, #4a4843 0%, #262624 45%, #121212 100%);
+          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22), 0 24px 48px -24px rgba(0, 0, 0, 0.7);
+        }
+        .is-featured .pr-top {
+          background: rgba(255, 255, 255, 0.07);
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        .is-featured .pr-step,
+        .is-featured .pr-desc,
+        .is-featured .pr-list-label,
+        .is-featured .pr-meta { color: rgba(255, 255, 255, 0.68); }
+        .is-featured .pr-title,
+        .is-featured .pr-price,
+        .is-featured .pr-list li { color: var(--color-card-white); }
+        .is-featured .pr-badge {
+          background: var(--color-card-white);
           color: var(--color-studio-ink);
-          border-top-color: var(--color-ink-20);
         }
 
-        /* Catatan scope — posisi sama dengan timeline, di atas CTA */
-        .sol-bottom-note {
-          font-size: var(--text-caption);
-          font-weight: 400;
-          letter-spacing: var(--tracking-caption);
-          line-height: var(--leading-caption);
-          color: rgba(255,255,255,0.7);
-          padding-top: var(--spacing-16);
-          border-top: 1px solid rgba(255,255,255,0.08);
+        /* Panel atas — semua yang perlu dibaca dalam sekali lihat */
+        .pr-top {
+          background: #f6f6f2;
+          border-radius: 12px;
+          padding: clamp(20px, 2vw, 28px);
+          display: flex;
+          flex-direction: column;
         }
-
-        /* ── Custom Card (legacy .sol-custom-card, not used in current grid) ── */
-        .sol-custom-card {
-          border-radius: var(--radius-xl);
-          padding: var(--card-padding);
+        .pr-step-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: var(--spacing-48);
-          background-color: #272727;
+          gap: 8px;
+          min-height: 26px;
+        }
+        .pr-step {
+          margin: 0;
+          font-size: 12px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--color-ink-60);
+        }
+        .pr-badge {
+          font-size: 12px;
+          line-height: 1;
+          padding: 7px 10px;
+          border-radius: 9999px;
+          background: var(--color-studio-ink);
           color: var(--color-card-white);
-          margin-bottom: var(--spacing-32);
-        }
-
-        .sol-custom-left {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          max-width: 560px;
-        }
-
-        .sol-custom-title {
-          font-size: var(--text-subheading);
-          font-weight: 400;
-          letter-spacing: var(--tracking-subheading);
-        }
-
-        .sol-custom-pos {
-          font-size: var(--text-body);
-          font-weight: 400;
-          line-height: var(--leading-body);
-          letter-spacing: var(--tracking-body);
-        }
-
-        .sol-custom-desc {
-          font-size: var(--text-body);
-          font-weight: 400;
-          line-height: var(--leading-body);
-          letter-spacing: var(--tracking-body);
-          color: rgba(255,255,255,0.50);
-        }
-
-        .sol-custom-right {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: var(--spacing-16);
-          flex-shrink: 0;
-        }
-
-        .sol-custom-price {
-          font-size: var(--text-heading);
-          font-weight: 400;
-          letter-spacing: var(--tracking-heading);
           white-space: nowrap;
         }
-
-        /* ── Kutipan founder sebagai pembuka section ── */
-        .harga-quote {
-          margin: 0 auto var(--spacing-32);
-          max-width: 760px;
-        }
-
-        .harga-quote blockquote {
-          margin: 0;
-          font-size: clamp(22px, 2.4vw, 32px);
-          line-height: 1.3;
+        .pr-title {
+          margin: 14px 0 0;
+          font-size: clamp(24px, 2vw, 28px);
+          font-weight: 500;
+          line-height: 1.15;
           letter-spacing: -0.02em;
-          color: var(--color-card-white);
-          text-wrap: balance;
+          color: var(--color-studio-ink);
+        }
+        .pr-desc {
+          margin: 10px 0 0;
+          font-size: 15px;
+          line-height: 1.5;
+          color: var(--color-ink-60);
+          min-height: 4.5em; /* tiga baris — harga & tombol sejajar antar kartu */
+        }
+        .pr-price {
+          margin: 24px 0 20px;
+          display: flex;
+          align-items: baseline;
+          flex-wrap: wrap;
+          gap: 4px 8px;
+          color: var(--color-studio-ink);
+        }
+        .pr-amount {
+          font-size: clamp(30px, 2.6vw, 38px);
+          font-weight: 500;
+          line-height: 1;
+          letter-spacing: -0.03em;
+        }
+        .pr-unit { font-size: 14px; color: var(--color-ink-60); }
+
+        .pr-top a.pr-cta {
+          width: 100%;
+          justify-content: center;
+          text-align: center;
+          padding: 14px 16px;
+          border-radius: 10px;
         }
 
-        .harga-quote figcaption {
-          margin-top: 12px;
+        /* Panel bawah — isi paket */
+        .pr-bottom {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          padding: 22px clamp(14px, 1.6vw, 22px) 14px;
+        }
+        .pr-list-label {
+          margin: 0 0 14px;
           font-size: 14px;
+          color: var(--color-ink-60);
+        }
+        .pr-list {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 11px;
+        }
+        .pr-list li {
+          display: flex;
+          gap: 10px;
+          align-items: flex-start;
+          font-size: 15px;
+          line-height: 1.45;
+          color: var(--color-studio-ink);
+        }
+        .pr-check { flex: none; margin-top: 3px; }
+        .pr-meta {
+          margin: auto 0 0;
+          padding-top: 22px;
+          font-size: 13px;
+          line-height: 1.5;
+          color: var(--color-ink-60);
+        }
+
+        #harga .pr-footnote .btn-link { color: var(--color-card-white); }
+        #harga .cdots-dot::after { background: rgba(255, 255, 255, 0.25); }
+        #harga .cdots-dot.is-active::after { background: var(--color-card-white); }
+
+        .pr-footnote {
+          margin: var(--spacing-24) auto 0;
+          max-width: 62em;
+          text-align: center;
+          font-size: 14px;
+          line-height: 1.6;
           color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Judul harga turun satu tingkat — kutipan yang memimpin */
-        #harga .sec-heading {
-          font-size: clamp(20px, 1.8vw, 26px);
-          line-height: 1.3;
-          letter-spacing: -0.4px;
-          color: rgba(255, 255, 255, 0.8);
+        /* ── Tablet & HP: kartu bertumpuk sesuai urutan 01–03 ── */
+        @media (max-width: 1023px) {
+          .pr-grid { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; }
+          .pr-desc { min-height: 0; }
         }
-
-        .harga-promo {
-          font-size: 13px;
-          line-height: 1.5;
-          color: rgba(255, 255, 255, 0.55);
-          text-align: center;
-          margin-top: var(--spacing-8);
-        }
-
-        /* ── Consultation CTA ── */
-        .harga-consult {
-          margin-top: var(--spacing-48);
-          padding-top: var(--spacing-40);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: var(--spacing-48);
-        }
-
-        .harga-consult-t {
-          font-size: var(--text-heading);
-          font-weight: 500;
-          line-height: var(--leading-heading);
-          letter-spacing: var(--tracking-heading);
-          margin-bottom: var(--spacing-8);
-          color: var(--color-card-white);
-        }
-
-        .harga-consult-b {
-          font-size: var(--text-body);
-          font-weight: 400;
-          line-height: var(--leading-body);
-          letter-spacing: var(--tracking-body);
-          color: rgba(255,255,255,0.72);
-          max-width: 480px;
-        }
-
-        .harga-consult > a { flex-shrink: 0; }
-
-        /* ── Button overrides khusus dark section ── */
-        /* Konsultasi CTA: putih bg, hitam teks */
-        #harga .harga-consult .btn-primary {
-          background-color: var(--color-card-white);
-          color: var(--color-studio-ink);
-        }
-
-        /* Business Website CTA (is-primary card): hitam bg, putih teks */
-        #harga .sol-card.is-primary .btn-primary-inverted {
-          background-color: var(--color-studio-ink);
-          color: var(--color-card-white);
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 900px) {
-          .sol-grid { grid-template-columns: 1fr 1fr; }
-          .sol-grid > :nth-child(1) { order: 2; }
-          .sol-grid > :nth-child(2) { order: 1; grid-column: 1 / -1; }
-          .sol-grid > :nth-child(3) { order: 3; }
-        }
-
-        @media (max-width: 640px) {
-          .sol-grid { grid-template-columns: 1fr; }
-          .sol-grid > :nth-child(1) { order: 2; }
-          .sol-grid > :nth-child(2) { order: 1; }
-          .sol-grid > :nth-child(3) { order: 3; }
-          .sol-custom-card {
-            flex-direction: column;
-            align-items: stretch;
-            gap: var(--spacing-24);
+        /* HP: kartu harga jadi carousel geser di dalam bingkai abu */
+        @media (max-width: 767px) {
+          .pr-grid {
+            display: flex;
+            max-width: none;
+            gap: 8px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 4px;
           }
-          .sol-custom-right { align-items: stretch; }
-          .harga-consult {
-            flex-direction: column;
-            align-items: stretch;
-            gap: var(--spacing-24);
-          }
-          .harga-consult > a { width: 100%; }
+          .pr-grid::-webkit-scrollbar { display: none; }
+          .pr-card { flex: 0 0 86%; scroll-snap-align: center; }
+        }
+        @media (max-width: 480px) {
+          .pr-shell { padding: 6px; border-radius: 20px; }
+          .pr-grid { margin-top: 8px; }
+          .pr-banner { border-radius: 16px; }
+          .pr-banner-title br { display: none; }
         }
       `}</style>
     </Section>

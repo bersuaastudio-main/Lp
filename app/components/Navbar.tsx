@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { openLeadForm } from "./LeadForm";
-import { WA_NUMBER, WA_DEFAULT } from "@/app/lib/constants";
+import { WA_NUMBER, WA_DEFAULT, CTA_LABEL, CTA_LABEL_SHORT } from "@/app/lib/constants";
 
 /* Link nav — tiga titik keputusan: lihat contoh, lihat harga, baca FAQ.
  * "Portofolio" mengarah ke section Contoh Hasil Kerja (showcase). */
@@ -118,8 +118,8 @@ export default function Navbar() {
             }}
             aria-haspopup="dialog"
           >
-            <span className="nav-cta-long">Konsultasi Gratis</span>
-            <span className="nav-cta-short">Konsultasi</span>
+            <span className="nav-cta-long">{CTA_LABEL}</span>
+            <span className="nav-cta-short">{CTA_LABEL_SHORT}</span>
           </a>
         </div>
       </div>

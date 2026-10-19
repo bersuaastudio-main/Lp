@@ -6,8 +6,10 @@
 export const WA_NUMBER = "6287890205695"; // +62 878 9020 5695 — WhatsApp Business Bersua
 export const SITE_URL = "https://bersua.space";
 
-/** Satu label CTA di seluruh halaman (PRD G4). */
-export const CTA_LABEL = "Konsultasi Gratis";
+/** Satu label untuk semua tombol konsultasi (PRD G4) — hero, navbar, harga, penutup. */
+export const CTA_LABEL = "Diskusikan Kebutuhan Anda";
+/** Versi pendek untuk navbar di HP. */
+export const CTA_LABEL_SHORT = "Diskusikan";
 
 /**
  * Pesan pre-filled WhatsApp — dipakai SEMUA CTA di halaman, supaya chat yang
@@ -21,11 +23,11 @@ export const WA_DEFAULT =
 export const waPackage = (paket: string) =>
   `Halo Bersua, saya ingin *konsultasi gratis* tentang paket *${paket}*.\n\nNama bisnis: *[ ]*\nBidang usaha: *[ ]*`;
 
-/** Pilihan paket di form leads (LeadForm). `name` harus sama dengan judul kartu harga;
- *  `anchor` = harga normal (dicoret) — samakan dengan `anchorPrice` di Harga.tsx. */
+/** Pilihan paket di form leads (LeadForm). `name` harus sama dengan `paket` di Harga.tsx.
+ *  `anchor` = harga coret (opsional) — kosongkan bila tidak ada promo. */
 export const PACKAGE_OPTIONS: { name: string; price: string; anchor?: string }[] = [
-  { name: "Starter", price: "Rp1,1 jt", anchor: "Rp1,6 jt" },
-  { name: "Business Website", price: "Rp2,5 jt", anchor: "Rp3,75 jt" },
+  { name: "Starter", price: "Rp1 jt" },
+  { name: "Business Website", price: "Rp2,5 jt" },
   { name: "Custom", price: "Sesuai scope" },
   { name: "Belum yakin", price: "Bantu pilihkan" },
 ];

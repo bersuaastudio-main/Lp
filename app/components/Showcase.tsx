@@ -150,15 +150,14 @@ export default function Showcase() {
     <Section
       id="contoh"
       track="demo"
-      heading="Featured Project"
+      heading="Contoh hasil kerja"
       surface="ink"
-      sub="Bersua membantu bisnis membangun website dari konsep, desain, hingga siap digunakan sesuai dengan karakter dan kebutuhan bisnis Anda."
     >
       <div className={`sc-wrap${paused ? " is-paused" : ""}`}>
         <div
           className="sc-stage"
           aria-roledescription="carousel"
-          aria-label="Featured Project"
+          aria-label="Contoh hasil kerja"
           style={{ paddingTop: `${(current.h / current.w) * 100}%` }}
         >
           {/* Slide ditumpuk; hanya yang aktif terlihat (crossfade) */}
@@ -412,8 +411,8 @@ export default function Showcase() {
           }
           .sc-tabs::-webkit-scrollbar { display: none; }
           .sc-tab { flex-shrink: 0; scroll-snap-align: start; }
-          .sc-thumb { width: 72px; }
-          .sc-tab-label { font-size: 9px; letter-spacing: 0.3px; }
+          .sc-thumb { width: 80px; }
+          .sc-tab-label { font-size: 11px; letter-spacing: 0; }
         }
 
         @media (prefers-reduced-motion: reduce) {
